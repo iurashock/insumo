@@ -7,14 +7,14 @@ import {
 } from 'react-native';
 import { Animated } from 'react-native';
 
-import EntryListItem from '../components/EntryListItem';
-import EntryListSeparator from '../components/EntryListSeparator';
-import EntryListHeader from '../components/EntryListHeader';
+import EntryListItem from '../../components/EntryListItem';
+import EntryListSeparator from '../../components/EntryListSeparator';
+import EntryListHeader from '../../components/EntryListHeader';
 import {
   ENTRIES,
   ENTRY_LIST_HEADER_MIN_HEIGHT,
   ENTRY_LIST_HEADER_MAX_HEIGHT,
-} from '../constants/constants';
+} from '../../constants/constants';
 
 export default function IndexScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;

@@ -4,13 +4,27 @@ import Head from 'expo-router/head';
 import { useFonts } from 'expo-font';
 import { View, Text, ActivityIndicator } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
+import { Provider, useDispatch } from 'react-redux';
+
 import '../../global.css';
 
 import TopNavBar from '../components/TopNavBar';
+import { AppDispatch, store } from '../store';
+import { restoreSession } from '../store/slices/auth.slice';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function Layout() {
+function Bootstrap() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(restoreSession());
+  }, [dispatch]);
+
+  return <Slot />;
+}
+
+export default function RootLayoutWeb() {
   const pathname = usePathname();
   const [appReady, setAppReady] = useState(false);
 
@@ -20,6 +34,7 @@ export default function Layout() {
     '/dashboard': 'Insumo - Dashboard',
     '/networth': 'Insumo - Net Worth Tracking',
     '/settings': 'Insumo - Settings',
+    '/login': 'Insumo - Login',
   };
 
   // update title based on current path
@@ -68,18 +83,16 @@ export default function Layout() {
   }
 
   return (
-    <React.Fragment>
+    <Provider store={store}>
       <Head>
         <title>{pageTitle}</title>
       </Head>
 
       <View className='min-h-screen bg-white'>
-        <TopNavBar />
-
         <View>
-          <Slot />
+          <Bootstrap />
         </View>
       </View>
-    </React.Fragment>
+    </Provider>
   );
 }

@@ -1,8 +1,33 @@
-import { Category, Entry } from './types';
+import { Category, Entry, User } from './types';
 
 export const ENTRY_LIST_HEADER_MAX_HEIGHT = 200;
 export const ENTRY_LIST_HEADER_MIN_HEIGHT = 48;
 export const TOP_NAVBAR_HEIGHT = 80;
+
+export const USERS: User[] = [
+  {
+    userId: 123456,
+    name: 'John Smith',
+    email: 'john.smith@gmail.com',
+    phone: '+40723456789',
+    passwordHash: 'sadasdadad?',
+    createdAt: new Date(2025, 5, 15),
+    dateOfBirth: new Date(2001, 2, 20),
+    darkMode: true,
+    mainCurrency: 'RON',
+  },
+  {
+    userId: 987654,
+    name: 'Michael Bertoldo',
+    email: 'bertoldo@gmail.com',
+    phone: '+40722334455',
+    passwordHash: 'sadasdadadsdasd?',
+    createdAt: new Date(2025, 10, 15),
+    dateOfBirth: new Date(1998, 6, 14),
+    darkMode: false,
+    mainCurrency: 'EUR',
+  },
+];
 
 export const CATEGORIES: Category[] = [
   {

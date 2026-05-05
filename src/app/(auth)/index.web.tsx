@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import EntryListItem from '../components/EntryListItem';
-import EntryListHeader from '../components/EntryListHeader';
-import EntryListSeparator from '../components/EntryListSeparator';
+import EntryListItem from '../../components/EntryListItem';
+import EntryListHeader from '../../components/EntryListHeader';
+import EntryListSeparator from '../../components/EntryListSeparator';
 
 import {
   ENTRIES,
   ENTRY_LIST_HEADER_MAX_HEIGHT,
   ENTRY_LIST_HEADER_MIN_HEIGHT,
   TOP_NAVBAR_HEIGHT,
-} from '../constants/constants';
+} from '../../constants/constants';
+import FooterBar from '../../components/FooterBar';
 
 export default function IndexWebScreen() {
   const firstEntryRef = useRef<HTMLDivElement | null>(null);
@@ -145,6 +146,7 @@ export default function IndexWebScreen() {
           ))}
         </div>
       </main>
+      <FooterBar />
     </>
   );
 }
