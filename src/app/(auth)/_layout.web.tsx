@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../store';
 import TopNavBar from '@/src/components/TopNavBar';
 import React from 'react';
-import { restoreSession } from '@/src/store/slices/auth.slice';
 
 export default function AuthLayoutWeb() {
   const dispatch = useDispatch<AppDispatch>();
@@ -11,10 +10,8 @@ export default function AuthLayoutWeb() {
     (state: RootState) => state.auth.status === 'authenticated',
   );
 
-  // dispatch(restoreSession());
-
   if (!isAuthenticated) {
-    return <Redirect href='/login' />;
+    return <Redirect href='/landing' />;
   }
 
   return (

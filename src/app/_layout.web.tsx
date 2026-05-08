@@ -34,7 +34,7 @@ export default function RootLayoutWeb() {
     '/dashboard': 'Insumo - Dashboard',
     '/networth': 'Insumo - Net Worth Tracking',
     '/settings': 'Insumo - Settings',
-    '/login': 'Insumo - Login',
+    '/landing': 'Insumo - Landing page',
   };
 
   // update title based on current path
@@ -89,7 +89,7 @@ export default function RootLayoutWeb() {
       </Head>
 
       <View className='min-h-screen bg-white'>
-        <View>
+        <View className='flex-1'>
           <Bootstrap />
         </View>
       </View>

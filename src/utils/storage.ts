@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 
-export async function setToken(key: string, value: string) {
+export async function setItemFromStorage(key: string, value: string) {
   if (Platform.OS === 'web') {
     localStorage.setItem(key, value);
     return;
@@ -9,14 +9,14 @@ export async function setToken(key: string, value: string) {
   return SecureStore.setItemAsync(key, value);
 }
 
-export async function getToken(key: string) {
+export async function getItemFromStorage(key: string) {
   if (Platform.OS === 'web') {
     return localStorage.getItem(key);
   }
   return SecureStore.getItemAsync(key);
 }
 
-export async function removeToken(key: string) {
+export async function removeItemFromStorage(key: string) {
   if (Platform.OS === 'web') {
     localStorage.removeItem(key);
     return;

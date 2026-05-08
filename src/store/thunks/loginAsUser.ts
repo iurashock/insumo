@@ -1,7 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { USERS } from '@/src/constants/constants';
+import {
+  ACCESS_TOKEN_KEY,
+  USER_ID_KEY,
+  USERS,
+} from '@/src/constants/constants';
 import { setUser } from '@/src/store/slices/user.slice';
 import { hydrateFromUser } from '@/src/store/slices/settings.slice';
+import { setItemFromStorage } from '@/src/utils/storage';
 
 export const loginAsUser = createAsyncThunk<void, { userId: number }>(
   'auth/loginAsUser',
@@ -11,6 +16,10 @@ export const loginAsUser = createAsyncThunk<void, { userId: number }>(
     if (!user) {
       throw new Error('User not found');
     }
+
+    // ✅ Store token securely (side effect)
+    await setItemFromStorage(ACCESS_TOKEN_KEY, 'fake-token');
+    await setItemFromStorage(USER_ID_KEY, userId.toString());
 
     // ✅ User identity slice
     thunkAPI.dispatch(

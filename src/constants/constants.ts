@@ -3,6 +3,8 @@ import { Category, Entry, User } from './types';
 export const ENTRY_LIST_HEADER_MAX_HEIGHT = 200;
 export const ENTRY_LIST_HEADER_MIN_HEIGHT = 48;
 export const TOP_NAVBAR_HEIGHT = 80;
+export const ACCESS_TOKEN_KEY = 'accessToken';
+export const USER_ID_KEY = 'userID';
 
 export const USERS: User[] = [
   {
@@ -10,22 +12,24 @@ export const USERS: User[] = [
     name: 'John Smith',
     email: 'john.smith@gmail.com',
     phone: '+40723456789',
-    passwordHash: 'sadasdadad?',
+    passwordHash: 'pass1',
     createdAt: new Date(2025, 5, 15),
     dateOfBirth: new Date(2001, 2, 20),
     darkMode: true,
     mainCurrency: 'RON',
+    language: 'en',
   },
   {
     userId: 987654,
     name: 'Michael Bertoldo',
     email: 'bertoldo@gmail.com',
     phone: '+40722334455',
-    passwordHash: 'sadasdadadsdasd?',
+    passwordHash: 'pass2',
     createdAt: new Date(2025, 10, 15),
     dateOfBirth: new Date(1998, 6, 14),
     darkMode: false,
     mainCurrency: 'EUR',
+    language: 'en',
   },
 ];
 

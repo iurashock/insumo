@@ -1,7 +1,7 @@
 import { View, Text, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store';
 import { logout } from '../../store/slices/auth.slice';
 
@@ -10,8 +10,13 @@ const settings = () => {
   const [dark, setDark] = useState(false);
   useTheme(dark);
 
+  const user = useSelector((state) => state.user);
+
   return (
     <View className='justify-center items-center flex-1 p-4 bg-white dark:bg-black pt-20'>
+      <Text className='text-black font-jetbrains-500 text-3xl dark:text-white mb-6'>
+        {user.userId}: {user.name}
+      </Text>
       <Text className='text-black dark:text-white mb-6'>Dark mode toggle</Text>
       <Pressable
         onPress={() => setDark(!dark)}
