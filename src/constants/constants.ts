@@ -1,10 +1,11 @@
 import { Category, Entry, User } from './types';
 
 export const ENTRY_LIST_HEADER_MAX_HEIGHT = 200;
-export const ENTRY_LIST_HEADER_MIN_HEIGHT = 48;
-export const TOP_NAVBAR_HEIGHT = 80;
+export const ENTRY_LIST_HEADER_MIN_HEIGHT = 44;
+export const TOP_NAVBAR_HEIGHT = 60;
 export const ACCESS_TOKEN_KEY = 'accessToken';
 export const USER_ID_KEY = 'userID';
+export const SETTINGS_KEY = 'app_settings';
 
 export const USERS: User[] = [
   {

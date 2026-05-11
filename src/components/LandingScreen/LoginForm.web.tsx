@@ -50,12 +50,14 @@ const LoginForm = () => {
         value={emailInput}
         onChange={setEmailInput}
         error={errors.email}
+        onSubmit={onSubmitHandler}
       />
       <LoginInputField
         type='password'
         value={passwordInput}
         onChange={setPasswordInput}
         error={errors.password}
+        onSubmit={onSubmitHandler}
       />
       <View>
         <LoginButton title='Log in' onPress={onSubmitHandler} />

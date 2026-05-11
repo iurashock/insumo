@@ -3,8 +3,9 @@ import { View, Text, Image } from 'react-native';
 import { Link, usePathname } from 'expo-router';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import UserMenu from './UserMenu.web';
-import Logo3 from '../../assets/logo_recolor.png';
+import UserMenu from './DropdownMenu.web';
+import Logo3 from '@/assets/logo_recolor.png';
+import { TOP_NAVBAR_HEIGHT } from '@/src/constants/constants';
 
 const TopNavBar = () => {
   const pathname = usePathname();
@@ -18,7 +19,9 @@ const TopNavBar = () => {
   };
 
   return (
-    <View className='fixed top-0 left-0 right-0 z-50 flex flex-row justify-between items-center w-full h-20 bg-green-50 px-[10%]'>
+    <View
+      className={`fixed top-0 left-0 right-0 z-50 flex flex-row justify-between items-center w-full h-[${TOP_NAVBAR_HEIGHT}] bg-green-50 px-5`}
+    >
       <View className='flex justify-center items-center'>
         <Link
           href='/'
@@ -26,7 +29,10 @@ const TopNavBar = () => {
         >
           <Image
             source={Logo3}
-            style={{ width: 90, height: 90 }}
+            style={{
+              width: TOP_NAVBAR_HEIGHT + 5,
+              height: TOP_NAVBAR_HEIGHT + 5,
+            }}
             resizeMode='contain'
           />
           <Text className='text-3xl font-jetbrains-700'>insumo</Text>
@@ -37,7 +43,7 @@ const TopNavBar = () => {
           <Text
             className={
               pathname === '/dashboard'
-                ? 'text-green-500 border-b-4 border-green-500 font-jetbrains-700 text-2xl px-3 py-1 pb-5'
+                ? 'text-green-500 border-b-4 border-green-500 font-jetbrains-700 text-2xl px-3 py-1 pb-3'
                 : 'text-gray-500 font-jetbrains-700 text-2xl px-3 py-1'
             }
           >
@@ -48,7 +54,7 @@ const TopNavBar = () => {
           <Text
             className={
               pathname === '/networth'
-                ? 'text-green-500 border-b-4 border-green-500 font-jetbrains-700 text-2xl px-3 py-1 pb-5'
+                ? 'text-green-500 border-b-4 border-green-500 font-jetbrains-700 text-2xl px-3 py-1 pb-3'
                 : 'text-gray-500 font-jetbrains-700 text-2xl px-3 py-1'
             }
           >
@@ -66,7 +72,7 @@ const TopNavBar = () => {
         </Link>
       </View> */}
 
-      <View className='px-6'>
+      <View className='px-2'>
         <div ref={iconRef}>
           <MaterialCommunityIcons
             name='cog'

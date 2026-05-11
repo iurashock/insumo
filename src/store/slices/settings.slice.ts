@@ -6,7 +6,7 @@ import {
   SETTINGS_STATUS,
 } from '../../constants/types';
 
-type SettingsState = {
+export type SettingsState = {
   darkMode: boolean;
   mainCurrency: SETTINGS_CURRENCY;
   language: SETTINGS_LANGUAGE;

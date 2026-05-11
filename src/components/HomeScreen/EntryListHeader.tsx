@@ -3,14 +3,15 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import {
   ENTRY_LIST_HEADER_MIN_HEIGHT,
   ENTRY_LIST_HEADER_MAX_HEIGHT,
-} from '../constants/constants';
+} from '@/src/constants/constants';
 
-type Props = {
+export default function EntryListHeader({
+  date,
+  height,
+}: {
   date: string;
   height: number;
-};
-
-export default function EntryListHeader({ date, height }: Props) {
+}) {
   const [showSearch, setShowSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
 

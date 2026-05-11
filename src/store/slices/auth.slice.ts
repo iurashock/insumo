@@ -1,7 +1,7 @@
 import {
   getItemFromStorage,
   removeItemFromStorage,
-  setItemFromStorage,
+  setItemInStorage,
 } from '@/src/utils/storage';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loginAsUser } from '../thunks/loginAsUser';
@@ -9,9 +9,11 @@ import { hydrateFromUser } from './settings.slice';
 import { setUser, UserState } from './user.slice';
 import {
   ACCESS_TOKEN_KEY,
+  SETTINGS_KEY,
   USER_ID_KEY,
   USERS,
 } from '@/src/constants/constants';
+import { RootState } from '..';
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -35,8 +37,9 @@ export const login = createAsyncThunk<
     const response = await fakeLogin(credentials);
 
     // ✅ Store token securely (side effect)
-    await setItemFromStorage(ACCESS_TOKEN_KEY, response.accessToken);
-    await setItemFromStorage(USER_ID_KEY, response.userId.toString());
+    await setItemInStorage(ACCESS_TOKEN_KEY, response.accessToken);
+    await setItemInStorage(USER_ID_KEY, response.userId.toString());
+    const settingsRaw = await getItemFromStorage(SETTINGS_KEY);
 
     const user = USERS.find((u) => u.userId === response.userId);
     if (!user) throw new Error('User not found');
@@ -51,6 +54,10 @@ export const login = createAsyncThunk<
     thunkAPI.dispatch(setUser(userState));
     thunkAPI.dispatch(hydrateFromUser(user));
 
+    if (settingsRaw) {
+      thunkAPI.dispatch(hydrateFromUser(JSON.parse(settingsRaw)));
+    }
+
     return;
   } catch (error) {
     return thunkAPI.rejectWithValue('Login failed');
@@ -62,6 +69,7 @@ export const restoreSession = createAsyncThunk<void>(
   async (_, thunkAPI) => {
     const token = await getItemFromStorage(ACCESS_TOKEN_KEY);
     const userIdRaw = await getItemFromStorage(USER_ID_KEY);
+    const settingsRaw = await getItemFromStorage(SETTINGS_KEY);
 
     if (!token || !userIdRaw) {
       return thunkAPI.rejectWithValue('No active session');
@@ -84,14 +92,25 @@ export const restoreSession = createAsyncThunk<void>(
     thunkAPI.dispatch(setUser(userState));
     thunkAPI.dispatch(setUser(userState));
 
+    if (settingsRaw) {
+      thunkAPI.dispatch(hydrateFromUser(JSON.parse(settingsRaw)));
+    }
+
     return;
   },
 );
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-  await removeItemFromStorage(ACCESS_TOKEN_KEY);
-  await removeItemFromStorage(USER_ID_KEY);
-});
+export const logout = createAsyncThunk<void, void, { state: RootState }>(
+  'auth/logout',
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState();
+
+    await setItemInStorage(SETTINGS_KEY, JSON.stringify(state.settings));
+
+    await removeItemFromStorage(ACCESS_TOKEN_KEY);
+    await removeItemFromStorage(USER_ID_KEY);
+  },
+);
 
 const authSlice = createSlice({
   name: 'auth',

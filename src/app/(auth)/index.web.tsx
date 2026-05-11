@@ -1,29 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
+import { View, Text, SectionList } from 'react-native';
 
-import EntryListItem from '../../components/EntryListItem';
-import EntryListHeader from '../../components/EntryListHeader';
-import EntryListSeparator from '../../components/EntryListSeparator';
+import EntryListItem from '../../components/HomeScreen/EntryListItem';
+import EntryListSeparator from '../../components/HomeScreen/EntryListSeparator';
 
-import {
-  ENTRIES,
-  ENTRY_LIST_HEADER_MAX_HEIGHT,
-  ENTRY_LIST_HEADER_MIN_HEIGHT,
-  TOP_NAVBAR_HEIGHT,
-} from '../../constants/constants';
+import { ENTRIES, TOP_NAVBAR_HEIGHT } from '../../constants/constants';
 import FooterBar from '../../components/FooterBar';
 
 export default function IndexWebScreen() {
-  const firstEntryRef = useRef<HTMLDivElement | null>(null);
-  const [headerHeight, setHeaderHeight] = useState(
-    ENTRY_LIST_HEADER_MAX_HEIGHT,
-  );
+  const listRef = useRef<SectionList<any>>(null);
 
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeDate, setActiveDate] = useState('');
-
-  /* ---------------------------------------------------------
-   * Group entries by date
-   * --------------------------------------------------------- */
   const sections = Object.values(
     ENTRIES.reduce(
       (acc, entry) => {
@@ -40,113 +26,46 @@ export default function IndexWebScreen() {
     ),
   ).sort((a, b) => new Date(b.title).getTime() - new Date(a.title).getTime());
 
-  /* ---------------------------------------------------------
-   * IMMEDIATE collapse on scroll
-   * --------------------------------------------------------- */
-  useEffect(() => {
-    let rafId: number | null = null;
-
-    const onScroll = () => {
-      if (rafId !== null) return;
-
-      rafId = requestAnimationFrame(() => {
-        rafId = null;
-
-        if (!firstEntryRef.current) return;
-
-        const navBottom = TOP_NAVBAR_HEIGHT;
-
-        const firstEntryTop =
-          firstEntryRef.current.getBoundingClientRect().top + window.scrollY;
-
-        const collapseDistance =
-          firstEntryTop - navBottom - ENTRY_LIST_HEADER_MIN_HEIGHT;
-
-        if (collapseDistance <= 0) return;
-
-        const scrollY = window.scrollY;
-
-        const progress = Math.min(Math.max(scrollY / collapseDistance, 0), 1);
-
-        const height =
-          ENTRY_LIST_HEADER_MAX_HEIGHT -
-          progress *
-            (ENTRY_LIST_HEADER_MAX_HEIGHT - ENTRY_LIST_HEADER_MIN_HEIGHT);
-
-        setHeaderHeight(height);
-      });
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
-    return () => {
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, []);
-
-  /* ---------------------------------------------------------
-   * Track active date
-   * --------------------------------------------------------- */
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-
-        if (visible[0]) {
-          const date = visible[0].target.getAttribute('data-date');
-          if (date) setActiveDate(date);
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    document
-      .querySelectorAll('section[data-date]')
-      .forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <>
-      {/* Fixed Entry Header */}
-      <header
-        className='fixed left-0 right-0 z-50 bg-white'
-        style={{ top: TOP_NAVBAR_HEIGHT }}
-      >
-        <EntryListHeader date={activeDate} height={headerHeight} />
-      </header>
+    <View
+      className='w-full min-h-screen max-h-[100vh] flex flex-col items-center px-6 '
+      style={{ paddingTop: TOP_NAVBAR_HEIGHT + 24 }}
+    >
+      <View className='w-full min-h-[20%] flex justify-center items-center rounded-2xl p-5 bg-white shadow-md'>
+        <Text>top content here: add entry + filters</Text>
+      </View>
 
-      {/* Document-scrolling content */}
-      <main
-        className='min-h-screen pb-10'
-        style={{
-          paddingTop: TOP_NAVBAR_HEIGHT + ENTRY_LIST_HEADER_MAX_HEIGHT,
-        }}
-      >
-        <div className='mx-auto w-full max-w-[1100px] px-6'>
-          {sections.map((section, sectionIndex) => (
-            <section key={section.title} data-date={section.title}>
+      <View className='flex w-full max-h-[65vh] flex-row justify-between gap-4 py-4'>
+        <View className='bg-white rounded-2xl shadow-md p-6 w-[30%] flex justify-center items-center'>
+          <Text>left side content here: balance + months view</Text>
+        </View>
+
+        <View className='w-[45%] h-[100%] bg-white rounded-2xl shadow-md overflow-hidden'>
+          <SectionList
+            sections={sections}
+            keyExtractor={(item) => item.id}
+            className='flex-1'
+            contentContainerClassName='gap-1'
+            renderSectionHeader={({ section }) => (
               <EntryListSeparator date={section.title} />
+            )}
+            renderItem={({ item }) => {
+              return (
+                <View>
+                  <EntryListItem {...item} />
+                </View>
+              );
+            }}
+            stickySectionHeadersEnabled
+          />
+        </View>
 
-              {section.data.map((entry, entryIndex) => {
-                const isFirst = sectionIndex === 0 && entryIndex === 0;
+        <View className='bg-white rounded-2xl shadow-md p-6 flex flex-1 justify-center items-center'>
+          <Text>right side content here: edits + details view</Text>
+        </View>
+      </View>
 
-                return (
-                  <div key={entry.id} ref={isFirst ? firstEntryRef : null}>
-                    <EntryListItem {...entry} />
-                  </div>
-                );
-              })}
-            </section>
-          ))}
-        </div>
-      </main>
       <FooterBar />
-    </>
+    </View>
   );
 }

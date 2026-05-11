@@ -4,13 +4,15 @@ import React, { useState } from 'react';
 const LoginInputField = ({
   type,
   value,
-  onChange,
   error,
+  onChange,
+  onSubmit,
 }: {
   type: 'email' | 'password' | 'confirm-password';
   value: string;
-  onChange: (text: string) => void;
   error?: string;
+  onChange: (text: string) => void;
+  onSubmit: () => void;
 }) => {
   const [focused, SetFocused] = useState(false);
   const label =
@@ -56,6 +58,8 @@ const LoginInputField = ({
           placeholder=''
           value={value}
           onChangeText={onChange}
+          // returnKeyType={type === 'password' ? 'done' : 'next'}
+          onSubmitEditing={onSubmit}
         />
       </View>
       <View className='min-h-[16px] mt-1'>

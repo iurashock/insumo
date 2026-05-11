@@ -2,7 +2,7 @@ import { View, Text, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../../store';
+import { AppDispatch, RootState } from '../../store';
 import { logout } from '../../store/slices/auth.slice';
 
 const settings = () => {
@@ -10,7 +10,7 @@ const settings = () => {
   const [dark, setDark] = useState(false);
   useTheme(dark);
 
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state: RootState) => state.user);
 
   return (
     <View className='justify-center items-center flex-1 p-4 bg-white dark:bg-black pt-20'>

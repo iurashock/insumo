@@ -3,14 +3,13 @@ import { View, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Entry } from '../constants/types';
-import { CATEGORIES, FALLBACK_CATEGORY } from '../constants/constants';
+import { Entry } from '@/src/constants/types';
+import { CATEGORIES, FALLBACK_CATEGORY } from '@/src/constants/constants';
 import EntryListButton from './EntryListButton';
 
 const EntryListItem: React.FC<Entry> = ({
   categoryId,
   walletId,
-  entryDate,
   comment,
   amount,
 }) => {
@@ -18,15 +17,15 @@ const EntryListItem: React.FC<Entry> = ({
     CATEGORIES.find((c) => c.id === Number(categoryId)) || FALLBACK_CATEGORY;
 
   return (
-    <View className='flex w-[100%] h-16 flex-row justify-between items-center px-6 border-b-[1px] border-black bg-gray-50'>
+    <View className='flex w-[100%] h-11 flex-row justify-between items-center px-2 py-1 border-b-[1px] border-black bg-gray-50'>
       <View className='flex-[1] pr-3 items-center justify-center'>
         <View
-          className='w-12 h-12 rounded-full items-center justify-center'
+          className='w-9 h-9 rounded-full items-center justify-center'
           style={{ backgroundColor: category.color }}
         >
           <MaterialCommunityIcons
             name={category.icon}
-            size={30}
+            size={26}
             color={'white'}
           />
         </View>
@@ -34,7 +33,7 @@ const EntryListItem: React.FC<Entry> = ({
       <View className='flex-[2.5] flex-col px-3 justify-center items-start'>
         <Text className='text-xs font-jetbrains-500 w-full'>{walletId}</Text>
         <Text
-          className='text-sm font-jetbrains-500 w-full'
+          className='text-sx font-jetbrains-500 w-full'
           style={{
             color:
               category.name == 'Savings'
@@ -47,18 +46,16 @@ const EntryListItem: React.FC<Entry> = ({
           {category.name}
         </Text>
       </View>
-      {/* <View className='flex-[2.5] flex-col px-3 justify-center items-start'>
-        <Text className='text-xs font-jetbrains-500 w-full'> Date</Text>
-        <Text className='text-sm font-jetbrains-500 w-full'> {entryDate} </Text>
-      </View> */}
       <View className='flex-[6] flex-col px-3 justify-center items-start'>
         <Text className='text-xs font-jetbrains-500 w-full'>Comment</Text>
-        <Text className='text-sm font-jetbrains-500 w-full'>{comment}</Text>
+        <Text className='text-xs font-jetbrains-500 w-full' numberOfLines={1}>
+          {comment}
+        </Text>
       </View>
       <View className='flex-[2] flex-col px-3 justify-center items-center'>
-        <Text className='text-xs font-jetbrains-500'>Amount</Text>
+        {/* <Text className='text-xs font-jetbrains-500'>Amount</Text> */}
         <Text
-          className='text-base font-jetbrains-500'
+          className='text-sm font-jetbrains-500'
           style={{
             color:
               category.name == 'Savings'
@@ -72,7 +69,7 @@ const EntryListItem: React.FC<Entry> = ({
           {amount} RON
         </Text>
       </View>
-      <View className='flex-[1.5] flex-row justify-end items-center'>
+      {/* <View className='flex-[1.5] flex-row justify-end items-center'>
         <EntryListButton
           iconName='clipboard-edit'
           iconColor='#474747'
@@ -83,7 +80,7 @@ const EntryListItem: React.FC<Entry> = ({
           iconColor='#cf3838'
           onPress={() => {}}
         />
-      </View>
+      </View> */}
     </View>
   );
 };

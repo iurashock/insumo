@@ -8,7 +8,7 @@ import { Provider, useDispatch } from 'react-redux';
 
 import '../../global.css';
 
-import TopNavBar from '../components/TopNavBar';
+import TopNavBar from '../components/TopNavBar/TopNavBar';
 import { AppDispatch, store } from '../store';
 import { restoreSession } from '../store/slices/auth.slice';
 
@@ -73,7 +73,7 @@ export default function RootLayoutWeb() {
 
   if (!appReady) {
     return (
-      <View className='flex-1 justify-center items-center bg-white'>
+      <View className='flex w-full min-h-screen justify-center items-center bg-white'>
         <ActivityIndicator size='large' color='#22c55e' />
         <Text className='font-jetbrains-200 py-2 text-xs color-gray-400'>
           loading fonts

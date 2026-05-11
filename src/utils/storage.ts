@@ -1,7 +1,9 @@
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import { SETTINGS_KEY } from '../constants/constants';
+import { SettingsState } from '../store/slices/settings.slice';
 
-export async function setItemFromStorage(key: string, value: string) {
+export async function setItemInStorage(key: string, value: string) {
   if (Platform.OS === 'web') {
     localStorage.setItem(key, value);
     return;

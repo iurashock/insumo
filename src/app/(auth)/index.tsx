@@ -7,9 +7,9 @@ import {
 } from 'react-native';
 import { Animated } from 'react-native';
 
-import EntryListItem from '../../components/EntryListItem';
-import EntryListSeparator from '../../components/EntryListSeparator';
-import EntryListHeader from '../../components/EntryListHeader';
+import EntryListItem from '../../components/HomeScreen/EntryListItem';
+import EntryListSeparator from '../../components/HomeScreen/EntryListSeparator';
+import EntryListHeader from '../../components/HomeScreen/EntryListHeader';
 import {
   ENTRIES,
   ENTRY_LIST_HEADER_MIN_HEIGHT,
