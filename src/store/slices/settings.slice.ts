@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { USERS } from '@/src/constants/constants';
 import {
   SETTINGS_CURRENCY,
   SETTINGS_LANGUAGE,

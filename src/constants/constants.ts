@@ -6,6 +6,8 @@ export const TOP_NAVBAR_HEIGHT = 60;
 export const ACCESS_TOKEN_KEY = 'accessToken';
 export const USER_ID_KEY = 'userID';
 export const SETTINGS_KEY = 'app_settings';
+export const ALL_ENTRIES_LIST_KEY = 'all_entries_list';
+export const SELECTED_ENTRY_ID_KEY = 'selected_entry_id';
 
 export const USERS: User[] = [
   {
@@ -36,51 +38,59 @@ export const USERS: User[] = [
 
 export const CATEGORIES: Category[] = [
   {
-    id: 1,
+    id: 'groc1',
+    type: 'expense',
     name: 'Groceries',
     color: '#BF3851',
     icon: 'cart',
   },
   {
-    id: 2,
+    id: 'home1',
     name: 'Home',
+    type: 'expense',
     color: '#3AC2C2',
     icon: 'home',
   },
   {
-    id: 3,
+    id: 'tran1',
     name: 'Transport',
+    type: 'expense',
     color: '#F59E0B',
     icon: 'bus',
   },
   {
-    id: 4,
+    id: 'fun01',
     name: 'Entertainment',
+    type: 'expense',
     color: '#8B5CF6',
     icon: 'movie-open',
   },
   {
-    id: 5,
+    id: 'heal1',
     name: 'Health',
+    type: 'expense',
     color: '#10B981',
     icon: 'heart-pulse',
   },
   {
-    id: 6,
-    name: 'Income',
+    id: 'inc01',
+    name: 'Salaried Job',
+    type: 'income',
     color: '#2563EB',
     icon: 'cash-plus',
   },
   {
-    id: 7,
-    name: 'Savings',
+    id: 'save1',
+    type: 'saving',
+    name: 'Retirement fund',
     color: '#059669',
     icon: 'piggy-bank',
   },
 ];
 
 export const FALLBACK_CATEGORY: Category = {
-  id: 0,
+  id: 'miss0',
+  type: 'transfer',
   name: 'missing',
   color: 'red',
   icon: 'head-question',
@@ -89,24 +99,24 @@ export const FALLBACK_CATEGORY: Category = {
 export const ENTRIES: Entry[] = [
   // ----- April 1
   {
-    id: '1',
-    categoryId: 6,
+    id: 'aZ9F3kQ2',
+    categoryId: 'inc01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-01',
     amount: 3200,
     comment: 'Monthly salary deposited from main employer.',
   },
   {
-    id: '2',
-    categoryId: 1,
+    id: 'M7xP2LQa',
+    categoryId: 'groc1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-01',
     amount: -145.3,
     comment: 'Weekly grocery shopping at the local supermarket.',
   },
   {
-    id: '3',
-    categoryId: 2,
+    id: 'R4BzK91e',
+    categoryId: 'home1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-01',
     amount: -420,
@@ -115,24 +125,24 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 2
   {
-    id: '4',
-    categoryId: 3,
+    id: 'kQ8mF7S2',
+    categoryId: 'tran1',
     walletId: 'Cash',
     entryDate: '2026-04-02',
     amount: -12.5,
     comment: 'Bus tickets and short ride across the city.',
   },
   {
-    id: '5',
-    categoryId: 1,
+    id: 'Z3T9xA4L',
+    categoryId: 'groc1',
     walletId: 'Cash',
     entryDate: '2026-04-02',
     amount: -36.9,
     comment: 'Picked up fruits, snacks, and drinks on the way home.',
   },
   {
-    id: '6',
-    categoryId: 7,
+    id: 'P6E2Rk9W',
+    categoryId: 'save1',
     walletId: 'Savings',
     entryDate: '2026-04-02',
     amount: -500,
@@ -141,16 +151,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 3
   {
-    id: '7',
-    categoryId: 4,
+    id: 'X5mK3R8A',
+    categoryId: 'fun01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-03',
     amount: -55,
     comment: 'Cinema night with friends, tickets and popcorn included.',
   },
   {
-    id: '8',
-    categoryId: 5,
+    id: 'N8Z6B7xM',
+    categoryId: 'heal1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-03',
     amount: -89.99,
@@ -159,16 +169,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 4
   {
-    id: '9',
-    categoryId: 3,
+    id: '4KQe8W2Z',
+    categoryId: 'tran1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-04',
     amount: -25,
     comment: 'Fuel contribution for a shared car ride.',
   },
   {
-    id: '10',
-    categoryId: 2,
+    id: 'L9mS6E2Q',
+    categoryId: 'home1',
     walletId: 'Savings',
     entryDate: '2026-04-04',
     amount: -300,
@@ -177,16 +187,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 5
   {
-    id: '11',
-    categoryId: 4,
+    id: 'W8ZP4xNQ',
+    categoryId: 'fun01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-05',
     amount: -42,
     comment: 'Streaming subscriptions and movie rental fees.',
   },
   {
-    id: '12',
-    categoryId: 1,
+    id: 'F6A9mKQZ',
+    categoryId: 'groc1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-05',
     amount: -67.4,
@@ -195,24 +205,24 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 6
   {
-    id: '13',
-    categoryId: 6,
+    id: '9PZ2M8A6',
+    categoryId: 'inc01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-06',
     amount: 250,
     comment: 'Freelance project payment received via bank transfer.',
   },
   {
-    id: '14',
-    categoryId: 5,
+    id: 'K7X2m9QZ',
+    categoryId: 'heal1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-06',
     amount: -120,
     comment: 'Doctor consultation and basic medical check-up.',
   },
   {
-    id: '15',
-    categoryId: 3,
+    id: 'RZ5Q8A9m',
+    categoryId: 'tran1',
     walletId: 'Cash',
     entryDate: '2026-04-06',
     amount: -8,
@@ -221,24 +231,24 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 7
   {
-    id: '16',
-    categoryId: 4,
+    id: 'Q2A7mP9Z',
+    categoryId: 'fun01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-07',
     amount: -60,
     comment: 'Dinner out with colleagues after work.',
   },
   {
-    id: '17',
-    categoryId: 2,
+    id: 'M8Q7X2ZP',
+    categoryId: 'home1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-07',
     amount: -95,
     comment: 'Bought small furniture items for the living room.',
   },
   {
-    id: '18',
-    categoryId: 1,
+    id: '6ZQ8PAM2',
+    categoryId: 'groc1',
     walletId: 'Cash',
     entryDate: '2026-04-07',
     amount: -22.8,
@@ -247,16 +257,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 8
   {
-    id: '19',
-    categoryId: 6,
+    id: 'X8M9Q2ZP',
+    categoryId: 'inc01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-08',
     amount: 180,
     comment: 'Side gig income from online consulting session.',
   },
   {
-    id: '20',
-    categoryId: 7,
+    id: 'K7ZP8M2Q',
+    categoryId: 'save1',
     walletId: 'Savings',
     entryDate: '2026-04-08',
     amount: -250,
@@ -265,16 +275,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 9
   {
-    id: '21',
-    categoryId: 3,
+    id: 'Z8A7M2PQ',
+    categoryId: 'tran1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-09',
     amount: -14,
     comment: 'Metro card top-up for daily commute.',
   },
   {
-    id: '22',
-    categoryId: 1,
+    id: 'Q2Z7PMA8',
+    categoryId: 'groc1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-09',
     amount: -52.6,
@@ -283,16 +293,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 10
   {
-    id: '23',
-    categoryId: 6,
+    id: 'M9Q7Z2PA',
+    categoryId: 'inc01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-10',
     amount: 500,
     comment: 'Performance bonus received for project delivery.',
   },
   {
-    id: '24',
-    categoryId: 7,
+    id: '8ZQ2MP7A',
+    categoryId: 'save1',
     walletId: 'Savings',
     entryDate: '2026-04-10',
     amount: -700,
@@ -301,16 +311,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 11
   {
-    id: '25',
-    categoryId: 4,
+    id: 'P8Z7A2QM',
+    categoryId: 'fun01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-11',
     amount: -75,
     comment: 'Concert tickets purchased for upcoming live event.',
   },
   {
-    id: '26',
-    categoryId: 5,
+    id: 'M2Z8Q7PA',
+    categoryId: 'heal1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-11',
     amount: -45,
@@ -319,16 +329,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 12
   {
-    id: '27',
-    categoryId: 1,
+    id: 'Q7M2P8ZA',
+    categoryId: 'groc1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-12',
     amount: -103.2,
     comment: 'Large grocery run including cleaning supplies.',
   },
   {
-    id: '28',
-    categoryId: 3,
+    id: 'Z8A2QM7P',
+    categoryId: 'tran1',
     walletId: 'Cash',
     entryDate: '2026-04-12',
     amount: -9,
@@ -337,16 +347,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 13
   {
-    id: '29',
-    categoryId: 6,
+    id: 'PZ2M7QA8',
+    categoryId: 'inc01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-13',
     amount: 120,
     comment: 'Refund received for previously returned purchase.',
   },
   {
-    id: '30',
-    categoryId: 7,
+    id: '7QZP2M8A',
+    categoryId: 'save1',
     walletId: 'Savings',
     entryDate: '2026-04-13',
     amount: -150,
@@ -355,16 +365,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 14
   {
-    id: '31',
-    categoryId: 2,
+    id: '8MZQ2P7A',
+    categoryId: 'home1',
     walletId: 'Main Wallet',
     entryDate: '2026-04-14',
     amount: -210,
     comment: 'Bought new desk lamp and storage containers.',
   },
   {
-    id: '32',
-    categoryId: 4,
+    id: 'Q2Z7MP8A',
+    categoryId: 'fun01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-14',
     amount: -30,
@@ -373,16 +383,16 @@ export const ENTRIES: Entry[] = [
 
   // ----- April 15
   {
-    id: '33',
-    categoryId: 6,
+    id: 'MZ8P2QA7',
+    categoryId: 'inc01',
     walletId: 'Main Wallet',
     entryDate: '2026-04-15',
     amount: 950,
     comment: 'Final invoice payment for freelance project.',
   },
   {
-    id: '34',
-    categoryId: 7,
+    id: 'Z7Q2M8PA',
+    categoryId: 'save1',
     walletId: 'Savings',
     entryDate: '2026-04-15',
     amount: -400,

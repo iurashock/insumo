@@ -9,11 +9,15 @@ import { hydrateFromUser } from './settings.slice';
 import { setUser, UserState } from './user.slice';
 import {
   ACCESS_TOKEN_KEY,
+  ALL_ENTRIES_LIST_KEY,
+  ENTRIES,
+  SELECTED_ENTRY_ID_KEY,
   SETTINGS_KEY,
   USER_ID_KEY,
   USERS,
 } from '@/src/constants/constants';
 import { RootState } from '..';
+import { resetData, setAllEntriesList, setSelectedEntryId } from './data.slice';
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -58,6 +62,13 @@ export const login = createAsyncThunk<
       thunkAPI.dispatch(hydrateFromUser(JSON.parse(settingsRaw)));
     }
 
+    if (ENTRIES.length > 0) {
+      thunkAPI.dispatch(setAllEntriesList(ENTRIES));
+      thunkAPI.dispatch(setSelectedEntryId('')); //ENTRIES[0].id));
+      await setItemInStorage(ALL_ENTRIES_LIST_KEY, JSON.stringify(ENTRIES));
+      await setItemInStorage(SELECTED_ENTRY_ID_KEY, ''); //ENTRIES[0].id);
+    }
+
     return;
   } catch (error) {
     return thunkAPI.rejectWithValue('Login failed');
@@ -96,6 +107,21 @@ export const restoreSession = createAsyncThunk<void>(
       thunkAPI.dispatch(hydrateFromUser(JSON.parse(settingsRaw)));
     }
 
+    if (ENTRIES.length > 0) {
+      const allEntriesListRaw = await getItemFromStorage(ALL_ENTRIES_LIST_KEY);
+      const selectedEntryListRaw = await getItemFromStorage(
+        SELECTED_ENTRY_ID_KEY,
+      );
+
+      if (allEntriesListRaw) {
+        thunkAPI.dispatch(setAllEntriesList(JSON.parse(allEntriesListRaw)));
+      }
+
+      if (selectedEntryListRaw) {
+        thunkAPI.dispatch(setSelectedEntryId(selectedEntryListRaw));
+      }
+    }
+
     return;
   },
 );
@@ -109,6 +135,10 @@ export const logout = createAsyncThunk<void, void, { state: RootState }>(
 
     await removeItemFromStorage(ACCESS_TOKEN_KEY);
     await removeItemFromStorage(USER_ID_KEY);
+    await removeItemFromStorage(ALL_ENTRIES_LIST_KEY);
+    await removeItemFromStorage(SELECTED_ENTRY_ID_KEY);
+
+    thunkAPI.dispatch(resetData());
   },
 );
 

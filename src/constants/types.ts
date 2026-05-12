@@ -5,7 +5,8 @@ export type SETTINGS_CURRENCY = 'RON' | 'EUR' | 'USD';
 export type SETTINGS_LANGUAGE = 'en' | 'ro';
 
 export type Category = {
-  id: number;
+  id: string;
+  type: 'income' | 'expense' | 'saving' | 'transfer';
   name: string;
   color: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
@@ -13,7 +14,7 @@ export type Category = {
 
 export type Entry = {
   id: string;
-  categoryId: number;
+  categoryId: string;
   walletId: string;
   entryDate: string;
   comment: string;
