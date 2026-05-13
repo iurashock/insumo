@@ -100,9 +100,9 @@ export default function IndexScreen() {
             id={item.id}
             categoryId={item.categoryId}
             walletId={item.walletId}
-            entryDate={item.entryDate}
             amount={item.amount}
             comment={item.comment}
+            onPress={() => {}}
           />
         )}
         showsVerticalScrollIndicator={true}

@@ -17,7 +17,13 @@ import {
   USERS,
 } from '@/src/constants/constants';
 import { RootState } from '..';
-import { resetData, setAllEntriesList, setSelectedEntryId } from './data.slice';
+import {
+  resetData,
+  setAllEntriesList,
+  setSelectedEntryId,
+  setSelectedIntervalRange,
+} from './data.slice';
+import { IntervalRange } from '@/src/constants/types';
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -68,6 +74,18 @@ export const login = createAsyncThunk<
       await setItemInStorage(ALL_ENTRIES_LIST_KEY, JSON.stringify(ENTRIES));
       await setItemInStorage(SELECTED_ENTRY_ID_KEY, ''); //ENTRIES[0].id);
     }
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const start = new Date(today.getFullYear(), today.getMonth(), 1);
+    const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    const defaultInterval: IntervalRange = {
+      choice: 'current_month',
+      start,
+      end,
+    };
+    thunkAPI.dispatch(setSelectedIntervalRange(defaultInterval));
 
     return;
   } catch (error) {
@@ -121,6 +139,19 @@ export const restoreSession = createAsyncThunk<void>(
         thunkAPI.dispatch(setSelectedEntryId(selectedEntryListRaw));
       }
     }
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const start = new Date(today.getFullYear(), today.getMonth(), 1);
+    const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    const defaultInterval: IntervalRange = {
+      choice: 'current_month',
+      start,
+      end,
+    };
+
+    thunkAPI.dispatch(setSelectedIntervalRange(defaultInterval));
 
     return;
   },

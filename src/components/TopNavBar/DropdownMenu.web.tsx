@@ -1,19 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import DropdownMenuItem from './DropdownMenuItem.web';
-import { TOP_NAVBAR_HEIGHT } from '@/src/constants/constants';
 import DropdownToggleSwitch from './DropdownToggleSwitch.web';
-import { useDispatch, useSelector } from 'react-redux';
 import { toggleDarkMode } from '@/src/store/slices/settings.slice';
-import { RootState } from '@/src/store';
 import { logout } from '@/src/store/slices/auth.slice';
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks';
 
-export default function UserMenu({
-  anchorRect,
+export default function DropDownMenu({
+  anchorEl,
   onClose,
 }: {
-  anchorRect: DOMRect;
+  anchorEl: HTMLElement;
   onClose: () => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -22,14 +19,20 @@ export default function UserMenu({
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        onClose();
-      }
+      const target = e.target as Node;
+
+      // ✅ click inside menu → ignore
+      if (ref.current?.contains(target)) return;
+
+      // ✅ click on anchor (cog) → ignore
+      if (anchorEl?.contains(target)) return;
+
+      onClose();
     };
 
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [onClose]);
+  }, [onClose, anchorEl]);
 
   const handleDarkModeToggle = () => {
     dispatch(toggleDarkMode());
@@ -45,8 +48,8 @@ export default function UserMenu({
       ref={ref}
       className={`px-2 py-2 w-[250px] z-50 absolute bg-white rounded-lg shadow-md`}
       style={{
-        top: anchorRect.bottom + 10,
-        left: anchorRect.right - 250,
+        top: anchorEl.getBoundingClientRect().bottom + 10,
+        left: anchorEl.getBoundingClientRect().right - 250,
       }}
     >
       <DropdownMenuItem

@@ -3,7 +3,7 @@ import { View, Text, Image } from 'react-native';
 import { Link, usePathname } from 'expo-router';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import UserMenu from './DropdownMenu.web';
+import DropDownMenu from './DropdownMenu.web';
 import Logo3 from '@/assets/logo_recolor.png';
 import { TOP_NAVBAR_HEIGHT } from '@/src/constants/constants';
 
@@ -13,9 +13,13 @@ const TopNavBar = () => {
   const [open, setOpen] = useState(false);
   const iconRef = useRef<HTMLDivElement>(null);
 
-  const openMenu = () => {
+  const toggleMenu = () => {
     if (!iconRef.current) return;
-    setOpen(true);
+    setOpen((prev) => !prev);
+  };
+
+  const closeMenu = () => {
+    setOpen(false);
   };
 
   return (
@@ -77,16 +81,13 @@ const TopNavBar = () => {
           <MaterialCommunityIcons
             name='cog'
             size={40}
-            onClick={openMenu}
+            onClick={toggleMenu}
             style={{ cursor: 'pointer' }}
           />
         </div>
 
         {open && iconRef.current && (
-          <UserMenu
-            anchorRect={iconRef.current.getBoundingClientRect()}
-            onClose={() => setOpen(false)}
-          />
+          <DropDownMenu anchorEl={iconRef.current} onClose={closeMenu} />
         )}
       </View>
     </View>

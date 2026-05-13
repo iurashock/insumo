@@ -1,4 +1,4 @@
-import { Category, Entry, User } from './types';
+import { Category, Entry, INTERVAL_PICK_OPTIONS, User } from './types';
 
 export const ENTRY_LIST_HEADER_MAX_HEIGHT = 200;
 export const ENTRY_LIST_HEADER_MIN_HEIGHT = 44;
@@ -8,6 +8,35 @@ export const USER_ID_KEY = 'userID';
 export const SETTINGS_KEY = 'app_settings';
 export const ALL_ENTRIES_LIST_KEY = 'all_entries_list';
 export const SELECTED_ENTRY_ID_KEY = 'selected_entry_id';
+
+export const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+export const WEEKDAY_LABELS = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+
+export const OPTIONS: {
+  value: INTERVAL_PICK_OPTIONS;
+  label: string;
+}[] = [
+  { value: 'current_week', label: 'This Week' },
+  { value: 'last_two_weeks', label: 'Last 2 Weeks' },
+  { value: 'current_month', label: 'This Month' },
+  { value: 'last_three_months', label: 'Last 3 Months' },
+  { value: 'current_year', label: 'This Year' },
+  { value: 'all_time', label: 'All Time' },
+  { value: 'custom', label: 'Custom range' },
+];
 
 export const USERS: User[] = [
   {
@@ -43,41 +72,47 @@ export const CATEGORIES: Category[] = [
     name: 'Groceries',
     color: '#BF3851',
     icon: 'cart',
+    isDeleted: false,
   },
   {
     id: 'home1',
-    name: 'Home',
     type: 'expense',
+    name: 'Home',
     color: '#3AC2C2',
     icon: 'home',
+    isDeleted: false,
   },
   {
     id: 'tran1',
-    name: 'Transport',
     type: 'expense',
+    name: 'Transport',
     color: '#F59E0B',
     icon: 'bus',
+    isDeleted: false,
   },
   {
     id: 'fun01',
-    name: 'Entertainment',
     type: 'expense',
+    name: 'Entertainment',
     color: '#8B5CF6',
     icon: 'movie-open',
+    isDeleted: false,
   },
   {
     id: 'heal1',
-    name: 'Health',
     type: 'expense',
+    name: 'Health',
     color: '#10B981',
     icon: 'heart-pulse',
+    isDeleted: false,
   },
   {
     id: 'inc01',
-    name: 'Salaried Job',
     type: 'income',
+    name: 'Salaried Job',
     color: '#2563EB',
     icon: 'cash-plus',
+    isDeleted: false,
   },
   {
     id: 'save1',
@@ -85,22 +120,45 @@ export const CATEGORIES: Category[] = [
     name: 'Retirement fund',
     color: '#059669',
     icon: 'piggy-bank',
+    isDeleted: false,
+  },
+  {
+    id: 'trsf01',
+    type: 'transfer',
+    name: 'Transfer',
+    color: '#636363',
+    icon: 'swap-horizontal',
+    isDeleted: false,
   },
 ];
 
 export const FALLBACK_CATEGORY: Category = {
   id: 'miss0',
-  type: 'transfer',
+  type: 'missing',
   name: 'missing',
   color: 'red',
   icon: 'head-question',
 };
 
 export const ENTRIES: Entry[] = [
+  {
+    id: 'aMs79sQ2',
+    categoryId: 'trsf01',
+    categoryType: 'transfer',
+    categoryName: 'Transfer',
+    walletId: 'Main Wallet',
+    recipientWalletId: 'Cash Wallet',
+    entryDate: '2026-04-29',
+    amount: 1400,
+    comment: 'ATM withdrawal for living expenses',
+  },
+
   // ----- April 1
   {
     id: 'aZ9F3kQ2',
     categoryId: 'inc01',
+    categoryType: 'income',
+    categoryName: 'Salaried Job',
     walletId: 'Main Wallet',
     entryDate: '2026-04-01',
     amount: 3200,
@@ -109,6 +167,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'M7xP2LQa',
     categoryId: 'groc1',
+    categoryType: 'expense',
+    categoryName: 'Groceries',
     walletId: 'Main Wallet',
     entryDate: '2026-04-01',
     amount: -145.3,
@@ -117,6 +177,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'R4BzK91e',
     categoryId: 'home1',
+    categoryType: 'expense',
+    categoryName: 'Home',
     walletId: 'Main Wallet',
     entryDate: '2026-04-01',
     amount: -420,
@@ -127,6 +189,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'kQ8mF7S2',
     categoryId: 'tran1',
+    categoryType: 'expense',
+    categoryName: 'Transport',
     walletId: 'Cash',
     entryDate: '2026-04-02',
     amount: -12.5,
@@ -135,6 +199,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Z3T9xA4L',
     categoryId: 'groc1',
+    categoryType: 'expense',
+    categoryName: 'Groceries',
     walletId: 'Cash',
     entryDate: '2026-04-02',
     amount: -36.9,
@@ -143,6 +209,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'P6E2Rk9W',
     categoryId: 'save1',
+    categoryType: 'saving',
+    categoryName: 'Retirement fund',
     walletId: 'Savings',
     entryDate: '2026-04-02',
     amount: -500,
@@ -153,6 +221,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'X5mK3R8A',
     categoryId: 'fun01',
+    categoryType: 'expense',
+    categoryName: 'Entertainment',
     walletId: 'Main Wallet',
     entryDate: '2026-04-03',
     amount: -55,
@@ -161,6 +231,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'N8Z6B7xM',
     categoryId: 'heal1',
+    categoryType: 'expense',
+    categoryName: 'Health',
     walletId: 'Main Wallet',
     entryDate: '2026-04-03',
     amount: -89.99,
@@ -171,6 +243,8 @@ export const ENTRIES: Entry[] = [
   {
     id: '4KQe8W2Z',
     categoryId: 'tran1',
+    categoryType: 'expense',
+    categoryName: 'Transport',
     walletId: 'Main Wallet',
     entryDate: '2026-04-04',
     amount: -25,
@@ -179,6 +253,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'L9mS6E2Q',
     categoryId: 'home1',
+    categoryType: 'expense',
+    categoryName: 'Home',
     walletId: 'Savings',
     entryDate: '2026-04-04',
     amount: -300,
@@ -189,6 +265,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'W8ZP4xNQ',
     categoryId: 'fun01',
+    categoryType: 'expense',
+    categoryName: 'Entertainment',
     walletId: 'Main Wallet',
     entryDate: '2026-04-05',
     amount: -42,
@@ -197,6 +275,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'F6A9mKQZ',
     categoryId: 'groc1',
+    categoryType: 'expense',
+    categoryName: 'Groceries',
     walletId: 'Main Wallet',
     entryDate: '2026-04-05',
     amount: -67.4,
@@ -207,6 +287,8 @@ export const ENTRIES: Entry[] = [
   {
     id: '9PZ2M8A6',
     categoryId: 'inc01',
+    categoryType: 'income',
+    categoryName: 'Salaried Job',
     walletId: 'Main Wallet',
     entryDate: '2026-04-06',
     amount: 250,
@@ -215,6 +297,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'K7X2m9QZ',
     categoryId: 'heal1',
+    categoryType: 'expense',
+    categoryName: 'Health',
     walletId: 'Main Wallet',
     entryDate: '2026-04-06',
     amount: -120,
@@ -223,6 +307,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'RZ5Q8A9m',
     categoryId: 'tran1',
+    categoryType: 'expense',
+    categoryName: 'Transport',
     walletId: 'Cash',
     entryDate: '2026-04-06',
     amount: -8,
@@ -233,6 +319,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Q2A7mP9Z',
     categoryId: 'fun01',
+    categoryType: 'expense',
+    categoryName: 'Entertainment',
     walletId: 'Main Wallet',
     entryDate: '2026-04-07',
     amount: -60,
@@ -241,6 +329,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'M8Q7X2ZP',
     categoryId: 'home1',
+    categoryType: 'expense',
+    categoryName: 'Home',
     walletId: 'Main Wallet',
     entryDate: '2026-04-07',
     amount: -95,
@@ -249,6 +339,8 @@ export const ENTRIES: Entry[] = [
   {
     id: '6ZQ8PAM2',
     categoryId: 'groc1',
+    categoryType: 'expense',
+    categoryName: 'Groceries',
     walletId: 'Cash',
     entryDate: '2026-04-07',
     amount: -22.8,
@@ -259,6 +351,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'X8M9Q2ZP',
     categoryId: 'inc01',
+    categoryType: 'income',
+    categoryName: 'Salaried Job',
     walletId: 'Main Wallet',
     entryDate: '2026-04-08',
     amount: 180,
@@ -267,6 +361,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'K7ZP8M2Q',
     categoryId: 'save1',
+    categoryType: 'saving',
+    categoryName: 'Retirement fund',
     walletId: 'Savings',
     entryDate: '2026-04-08',
     amount: -250,
@@ -277,6 +373,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Z8A7M2PQ',
     categoryId: 'tran1',
+    categoryType: 'expense',
+    categoryName: 'Transport',
     walletId: 'Main Wallet',
     entryDate: '2026-04-09',
     amount: -14,
@@ -285,6 +383,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Q2Z7PMA8',
     categoryId: 'groc1',
+    categoryType: 'expense',
+    categoryName: 'Groceries',
     walletId: 'Main Wallet',
     entryDate: '2026-04-09',
     amount: -52.6,
@@ -295,6 +395,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'M9Q7Z2PA',
     categoryId: 'inc01',
+    categoryType: 'income',
+    categoryName: 'Salaried Job',
     walletId: 'Main Wallet',
     entryDate: '2026-04-10',
     amount: 500,
@@ -303,6 +405,8 @@ export const ENTRIES: Entry[] = [
   {
     id: '8ZQ2MP7A',
     categoryId: 'save1',
+    categoryType: 'saving',
+    categoryName: 'Retirement fund',
     walletId: 'Savings',
     entryDate: '2026-04-10',
     amount: -700,
@@ -313,6 +417,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'P8Z7A2QM',
     categoryId: 'fun01',
+    categoryType: 'expense',
+    categoryName: 'Entertainment',
     walletId: 'Main Wallet',
     entryDate: '2026-04-11',
     amount: -75,
@@ -321,6 +427,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'M2Z8Q7PA',
     categoryId: 'heal1',
+    categoryType: 'expense',
+    categoryName: 'Health',
     walletId: 'Main Wallet',
     entryDate: '2026-04-11',
     amount: -45,
@@ -331,6 +439,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Q7M2P8ZA',
     categoryId: 'groc1',
+    categoryType: 'expense',
+    categoryName: 'Groceries',
     walletId: 'Main Wallet',
     entryDate: '2026-04-12',
     amount: -103.2,
@@ -339,6 +449,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Z8A2QM7P',
     categoryId: 'tran1',
+    categoryType: 'expense',
+    categoryName: 'Transport',
     walletId: 'Cash',
     entryDate: '2026-04-12',
     amount: -9,
@@ -349,6 +461,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'PZ2M7QA8',
     categoryId: 'inc01',
+    categoryType: 'income',
+    categoryName: 'Salaried Job',
     walletId: 'Main Wallet',
     entryDate: '2026-04-13',
     amount: 120,
@@ -357,6 +471,8 @@ export const ENTRIES: Entry[] = [
   {
     id: '7QZP2M8A',
     categoryId: 'save1',
+    categoryType: 'saving',
+    categoryName: 'Retirement fund',
     walletId: 'Savings',
     entryDate: '2026-04-13',
     amount: -150,
@@ -367,6 +483,8 @@ export const ENTRIES: Entry[] = [
   {
     id: '8MZQ2P7A',
     categoryId: 'home1',
+    categoryType: 'expense',
+    categoryName: 'Home',
     walletId: 'Main Wallet',
     entryDate: '2026-04-14',
     amount: -210,
@@ -375,6 +493,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Q2Z7MP8A',
     categoryId: 'fun01',
+    categoryType: 'expense',
+    categoryName: 'Entertainment',
     walletId: 'Main Wallet',
     entryDate: '2026-04-14',
     amount: -30,
@@ -385,6 +505,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'MZ8P2QA7',
     categoryId: 'inc01',
+    categoryType: 'income',
+    categoryName: 'Salaried Job',
     walletId: 'Main Wallet',
     entryDate: '2026-04-15',
     amount: 950,
@@ -393,6 +515,8 @@ export const ENTRIES: Entry[] = [
   {
     id: 'Z7Q2M8PA',
     categoryId: 'save1',
+    categoryType: 'saving',
+    categoryName: 'Retirement fund',
     walletId: 'Savings',
     entryDate: '2026-04-15',
     amount: -400,
