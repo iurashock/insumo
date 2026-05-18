@@ -1,23 +1,40 @@
-import { View, Text, Pressable } from 'react-native';
-import React, { useRef } from 'react';
+import { View, Text, Pressable, Dimensions } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import TimeIntervalSkipButton from './Filters/TimeIntervalSkipButton';
 import TimeIntervalPicker from './Filters/TimeIntervalPicker';
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks';
 import { setSelectedIntervalRange } from '@/src/store/slices/data.slice';
+import TransactionFilterDropdown from './Filters/TransactionSingleSelectList.web';
+import TransactionSingleSelectList from './Filters/TransactionSingleSelectList.web';
+import {
+  TRANSACTION_SORTING_OPTIONS,
+  TRANSACTION_TYPE_OPTIONS,
+} from '@/src/constants/constants';
+import TransactionSearchBar from './Filters/TransactionSearchBar.web';
+import ResetFiltersButton from './Filters/ResetFiltersButton.web';
+import TransactionMultipleSelectList from './Filters/TransactionMultipleSelectList.web';
 
 const FunctionalContainer = ({
   onRefresAction,
   filterActive,
+  earliestRecordDate,
+  latestRecordDate,
 }: {
   onRefresAction: () => void;
   filterActive?: string;
+  earliestRecordDate: Date;
+  latestRecordDate: Date;
 }) => {
+  const transactionFiltersRef = useRef<HTMLDivElement>(null);
   const intervalGroupRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
+  // const [categoriesIconName, setCategoriesIconName] = useState('');
   const selectedIntervalRange = useAppSelector(
     (state) => state.data.selectedIntervalRange,
   );
-  const dispatch = useAppDispatch();
+  const userWallets = useAppSelector((state) => state.wallets.items);
+  const userCategories = useAppSelector((state) => state.categories.items);
 
   const handleTimeIntervalSkipForwardAction = (direction: boolean) => {
     const { choice, start, end } = selectedIntervalRange;
@@ -32,7 +49,7 @@ const FunctionalContainer = ({
 
     switch (choice) {
       case 'current_month': {
-        // ✅ shift entire month
+        // shift entire month
         const newMonth = start.getMonth() + step;
 
         startDate = new Date(start.getFullYear(), newMonth, 1);
@@ -41,7 +58,7 @@ const FunctionalContainer = ({
       }
 
       case 'current_week': {
-        // ✅ shift by 7 days
+        // shift by 7 days
         startDate = new Date(start);
         startDate.setDate(start.getDate() + 7 * step);
 
@@ -51,7 +68,7 @@ const FunctionalContainer = ({
       }
 
       case 'last_two_weeks': {
-        // ✅ shift by 14 days
+        // shift by 14 days
         startDate = new Date(start);
         startDate.setDate(start.getDate() + 14 * step);
 
@@ -61,7 +78,7 @@ const FunctionalContainer = ({
       }
 
       case 'last_three_months': {
-        // ✅ shift by 3 months block
+        // shift by 3 months block
         startDate = new Date(
           start.getFullYear(),
           start.getMonth() + 3 * step,
@@ -76,19 +93,19 @@ const FunctionalContainer = ({
       }
 
       case 'current_year': {
-        // ✅ shift full year
+        // shift full year
         startDate = new Date(start.getFullYear() + step, 0, 1);
         endDate = new Date(start.getFullYear() + step, 11, 31);
         break;
       }
 
       case 'all_time': {
-        // ❌ nothing to shift
+        //  nothing to shift
         return;
       }
 
       case 'custom': {
-        // ✅ shift custom range by its own length
+        // shift custom range by its own length
         const diff = end.getTime() - start.getTime();
 
         startDate = new Date(start);
@@ -112,6 +129,10 @@ const FunctionalContainer = ({
     );
   };
 
+  const handleTransactionWalletFilter = (id: string) => {
+    console.log(id);
+  };
+
   return (
     <View className='w-full h-full pt-4 flex flex-column justify-between items-center'>
       <View className='w-full h-[70%] px-4 flex flex-row justify-between items-start'>
@@ -127,12 +148,67 @@ const FunctionalContainer = ({
         </Pressable>
       </View>
       <View className='w-full h-[30%] flex flex-row justify-between items-center pb-4 px-4'>
-        <View className='w-[29%] h-full border-r border-r-gray-300  '>
-          <Text>types + category filter, ascend/descent</Text>
-        </View>
-        <View className='w-[43%] h-full border-r border-r-gray-300 '>
-          <Text>search bar</Text>
-        </View>
+        <div
+          // className='w-[29%] h-full border-r border-r-gray-300 flex flex-row justify-between items-center'
+          className='flex-1 h-full border-r border-r-gray-300 flex flex-row justify-between items-center'
+          ref={transactionFiltersRef}
+        >
+          <TransactionSingleSelectList
+            onClose={() => {}}
+            options={TRANSACTION_TYPE_OPTIONS}
+            label='Type'
+            onSelect={handleTransactionWalletFilter}
+          />
+          <TransactionFilterDropdown
+            onClose={() => {}}
+            width={Dimensions.get('window').width * 0.15}
+            options={[
+              {
+                value: 'all_wallets',
+                label: 'All wallets',
+              },
+              ...userWallets.map((wallet) => ({
+                value: wallet.walletId,
+                label: wallet.name,
+              })),
+            ]}
+            label='Wallet'
+            onSelect={handleTransactionWalletFilter}
+          />
+          <TransactionMultipleSelectList
+            onClose={() => {}}
+            width={Dimensions.get('window').width * 0.15}
+            options={[
+              {
+                value: 'all_categories',
+                label: 'All categories',
+              },
+              ...userCategories.map((category) => ({
+                value: category.id,
+                label: category.name,
+              })),
+            ]}
+            label='Choose categories'
+            onSelect={handleTransactionWalletFilter}
+            showIcons
+            iconName={
+              `numeric-${userCategories.length < 9 ? userCategories.length + 1 : '9-plus'}-circle-outline` as keyof typeof MaterialCommunityIcons.glyphMap
+            }
+          />
+          <TransactionSingleSelectList
+            onClose={() => {}}
+            width={100}
+            options={TRANSACTION_SORTING_OPTIONS}
+            label='Sort'
+            onSelect={handleTransactionWalletFilter}
+          />
+          {/* </div>
+        <View className='w-[43%] h-full border-r border-r-gray-300 '> */}
+          {/* <Text>search bar</Text> */}
+          {/* </View> */}
+          <TransactionSearchBar />
+          <ResetFiltersButton />
+        </div>
 
         <div
           ref={intervalGroupRef}
@@ -142,7 +218,11 @@ const FunctionalContainer = ({
             left
             onPress={() => handleTimeIntervalSkipForwardAction(false)}
           />
-          <TimeIntervalPicker anchorGroupRef={intervalGroupRef} />
+          <TimeIntervalPicker
+            anchorGroupRef={intervalGroupRef}
+            earliestRecordDate={earliestRecordDate}
+            latestRecordDate={latestRecordDate}
+          />
           <TimeIntervalSkipButton
             onPress={() => handleTimeIntervalSkipForwardAction(true)}
           />

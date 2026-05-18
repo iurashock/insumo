@@ -9,8 +9,12 @@ import { MONTH_NAMES } from '@/src/constants/constants';
 
 const TimeIntervalPicker = ({
   anchorGroupRef,
+  earliestRecordDate,
+  latestRecordDate,
 }: {
   anchorGroupRef: React.RefObject<HTMLDivElement | null>;
+  earliestRecordDate: Date;
+  latestRecordDate: Date;
 }) => {
   const dispatch = useAppDispatch();
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -23,23 +27,7 @@ const TimeIntervalPicker = ({
     useState('Current Month');
 
   useEffect(() => {
-    // console.log(selectedIntervalRange);
-
-    // if (
-    //   !selectedIntervalRange.start ||
-    //   (!selectedIntervalRange.end &&
-    //     selectedIntervalRange.choice === 'current_month')
-    // ) {
-    //   console.log('entered');
-
-    //   const now = new Date();
-    //   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    //   const start = new Date(today.getFullYear(), today.getMonth(), 1);
-    //   const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    setIntervalDisplayText(
-      // formatLabel({ choice: selectedIntervalRange.choice, start, end }),
-      formatLabel(selectedIntervalRange),
-    );
+    setIntervalDisplayText(formatLabel(selectedIntervalRange));
     // }
   }, [selectedIntervalRange]);
 
@@ -113,6 +101,8 @@ const TimeIntervalPicker = ({
           anchorWidth={anchorWidth}
           onSelect={handleSelect}
           onClose={close}
+          earliestRecordDate={earliestRecordDate}
+          latestRecordDate={latestRecordDate}
         />
       )}
     </View>

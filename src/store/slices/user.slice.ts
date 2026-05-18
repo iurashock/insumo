@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type UserState = {
-  userId: number;
+  userId: string;
   name: string;
   email: string;
   phone: string;
 };
 
 const initialState: UserState = {
-  userId: 0,
+  userId: '',
   name: '',
   email: '',
   phone: '',

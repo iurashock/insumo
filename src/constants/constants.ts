@@ -1,4 +1,12 @@
-import { Category, Entry, INTERVAL_PICK_OPTIONS, User } from './types';
+import {
+  Category,
+  Entry,
+  INTERVAL_PICK_OPTIONS,
+  TRANSACTION_SORTING_PICK_OPTIONS,
+  TRANSACTION_TYPE_PICK_OPTIONS,
+  User,
+  Wallet,
+} from './types';
 
 export const ENTRY_LIST_HEADER_MAX_HEIGHT = 200;
 export const ENTRY_LIST_HEADER_MIN_HEIGHT = 44;
@@ -8,6 +16,7 @@ export const USER_ID_KEY = 'userID';
 export const SETTINGS_KEY = 'app_settings';
 export const ALL_ENTRIES_LIST_KEY = 'all_entries_list';
 export const SELECTED_ENTRY_ID_KEY = 'selected_entry_id';
+export const WALLETS_IDS_LIST_KEY = 'user_wallet_ids_list';
 
 export const MONTH_NAMES = [
   'January',
@@ -36,11 +45,33 @@ export const OPTIONS: {
   { value: 'current_year', label: 'This Year' },
   { value: 'all_time', label: 'All Time' },
   { value: 'custom', label: 'Custom range' },
+  { value: 'clear', label: 'Clear choice' },
+];
+
+export const TRANSACTION_TYPE_OPTIONS: {
+  value: TRANSACTION_TYPE_PICK_OPTIONS;
+  label: string;
+}[] = [
+  { value: 'all', label: 'All types' },
+  { value: 'income', label: 'Incomes' },
+  { value: 'expense', label: 'Expenses' },
+  { value: 'saving', label: 'Savings' },
+  { value: 'transfer', label: 'Transfers' },
+];
+
+export const TRANSACTION_SORTING_OPTIONS: {
+  value: TRANSACTION_SORTING_PICK_OPTIONS;
+  label: string;
+}[] = [
+  { value: 'newest', label: 'Newest' },
+  { value: 'oldest', label: 'Oldest' },
+  { value: 'least_expensive', label: 'Price ↑' },
+  { value: 'most_expensive', label: 'Price ↓' },
 ];
 
 export const USERS: User[] = [
   {
-    userId: 123456,
+    userId: '123456',
     name: 'John Smith',
     email: 'john.smith@gmail.com',
     phone: '+40723456789',
@@ -52,7 +83,7 @@ export const USERS: User[] = [
     language: 'en',
   },
   {
-    userId: 987654,
+    userId: '987654',
     name: 'Michael Bertoldo',
     email: 'bertoldo@gmail.com',
     phone: '+40722334455',
@@ -65,9 +96,69 @@ export const USERS: User[] = [
   },
 ];
 
+export const WALLETS: Wallet[] = [
+  {
+    walletId: '1',
+    userId: '123456',
+    name: 'Main Wallet',
+    currency: 'RON',
+    createdAt: new Date(2025, 5, 15),
+    lastUpdated: new Date(2026, 3, 20),
+  },
+  {
+    walletId: '2',
+    userId: '123456',
+    name: 'Cash Wallet',
+    currency: 'RON',
+    createdAt: new Date(2025, 6, 2),
+    lastUpdated: new Date(2026, 3, 18),
+  },
+  {
+    walletId: '3',
+    userId: '123456',
+    name: 'Savings',
+    currency: 'EUR',
+    createdAt: new Date(2025, 7, 10),
+    lastUpdated: new Date(2026, 3, 10),
+  },
+  {
+    walletId: '4',
+    userId: '123456',
+    name: 'Checking Account',
+    currency: 'EUR',
+    createdAt: new Date(2025, 10, 15),
+    lastUpdated: new Date(2026, 3, 22),
+  },
+  {
+    walletId: '5',
+    userId: '987654',
+    name: 'Cash',
+    currency: 'EUR',
+    createdAt: new Date(2025, 10, 20),
+    lastUpdated: new Date(2026, 3, 19),
+  },
+  {
+    walletId: '6',
+    userId: '987654',
+    name: 'Savings',
+    currency: 'USD',
+    createdAt: new Date(2025, 11, 1),
+    lastUpdated: new Date(2026, 3, 5),
+  },
+  {
+    walletId: '7',
+    userId: '987654',
+    name: 'Investments',
+    currency: 'USD',
+    createdAt: new Date(2026, 0, 5),
+    lastUpdated: new Date(2026, 3, 12),
+  },
+];
+
 export const CATEGORIES: Category[] = [
   {
     id: 'groc1',
+    userId: '123456',
     type: 'expense',
     name: 'Groceries',
     color: '#BF3851',
@@ -76,6 +167,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'home1',
+    userId: '123456',
     type: 'expense',
     name: 'Home',
     color: '#3AC2C2',
@@ -84,6 +176,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'tran1',
+    userId: '123456',
     type: 'expense',
     name: 'Transport',
     color: '#F59E0B',
@@ -92,6 +185,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'fun01',
+    userId: '123456',
     type: 'expense',
     name: 'Entertainment',
     color: '#8B5CF6',
@@ -100,6 +194,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'heal1',
+    userId: '123456',
     type: 'expense',
     name: 'Health',
     color: '#10B981',
@@ -108,6 +203,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'inc01',
+    userId: '123456',
     type: 'income',
     name: 'Salaried Job',
     color: '#2563EB',
@@ -116,6 +212,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'save1',
+    userId: '123456',
     type: 'saving',
     name: 'Retirement fund',
     color: '#059669',
@@ -124,6 +221,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     id: 'trsf01',
+    userId: '123456',
     type: 'transfer',
     name: 'Transfer',
     color: '#636363',
@@ -134,6 +232,7 @@ export const CATEGORIES: Category[] = [
 
 export const FALLBACK_CATEGORY: Category = {
   id: 'miss0',
+  userId: '',
   type: 'missing',
   name: 'missing',
   color: 'red',

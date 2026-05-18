@@ -14,12 +14,12 @@ function endOfMonth(date: Date) {
 
 const CalendarPicker = ({
   onConfirmSelection,
+  earliestRecordDate,
+  latestRecordDate,
 }: {
-  onConfirmSelection: (
-    // choice: INTERVAL_PICK_OPTIONS,
-    start: Date,
-    end: Date,
-  ) => void;
+  onConfirmSelection: (start: Date, end: Date) => void;
+  earliestRecordDate: Date;
+  latestRecordDate: Date;
 }) => {
   const selectedIntervalRange: IntervalRange = useAppSelector(
     (state) => state.data.selectedIntervalRange,
@@ -30,17 +30,56 @@ const CalendarPicker = ({
   const [rangeEnd, setRangeEnd] = useState<Date | null>(null);
 
   useEffect(() => {
-    if (selectedIntervalRange.choice === 'custom' && rangeStart && rangeEnd) {
-      setCurrentMonth(rangeStart);
+    const { choice, start, end } = selectedIntervalRange;
+    const today = new Date();
+
+    // ✅ Case 1: invalid or all_time → current month
+    if (choice === 'all_time' || !start || !end) {
+      setRangeStart(earliestRecordDate);
+      setRangeEnd(latestRecordDate);
+      if (
+        today.getMonth() >= earliestRecordDate.getMonth() &&
+        today.getMonth() <= latestRecordDate.getMonth()
+      ) {
+        setCurrentMonth(today);
+      }
+      setCurrentMonth(latestRecordDate);
       return;
     }
 
-    setRangeStart(selectedIntervalRange.start);
-    setRangeEnd(selectedIntervalRange.end);
-    setCurrentMonth(selectedIntervalRange.start ?? new Date());
+    setRangeStart(start);
+    setRangeEnd(end);
+
+    // Calculate range length in days
+    const diffMs = end.getTime() - start.getTime();
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+    // If range is large → show current month
+    if (diffDays > 60) {
+      if (
+        today.getMonth() >= start.getMonth() &&
+        today.getMonth() <= end.getMonth()
+      ) {
+        setCurrentMonth(today);
+      }
+      setCurrentMonth(end);
+      return;
+    }
+
+    if (diffDays <= 42) {
+      console.log(end.getDate(), end.getMonth(), end.getFullYear());
+      if (end.getMonth() - start.getMonth() > 1) {
+        console.log(end.getDate(), end.getMonth() - 1, end.getFullYear());
+        setCurrentMonth(
+          new Date(end.getFullYear(), end.getMonth() - 1, end.getDate()),
+        );
+      } else {
+        setCurrentMonth(end);
+      }
+    }
   }, [selectedIntervalRange]);
 
-  const monthStart = startOfMonth(currentMonth);
+  // const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
 
   const firstDayOfMonth = new Date(
@@ -95,21 +134,26 @@ const CalendarPicker = ({
     days.push({ date: day, isCurrentMonth: false });
   }
 
-  if (
-    days.length === 42 &&
-    days.slice(35, 42).every((d) => !d.isCurrentMonth)
-  ) {
-    days.splice(35, 7);
-  }
+  // remove last row ?
+  // if (
+  //   days.length === 42 &&
+  //   days.slice(35, 42).every((d) => !d.isCurrentMonth)
+  // ) {
+  //   days.splice(35, 7);
+  // }
 
   const handleDayClick = (day: Date) => {
-    if (!rangeStart || (rangeStart && rangeEnd)) {
+    if (
+      !rangeStart ||
+      (rangeStart && rangeEnd) ||
+      (rangeStart && day < rangeStart)
+    ) {
       setRangeStart(day);
       setRangeEnd(null);
       return;
     }
 
-    if (day < rangeStart) return;
+    console.log('day', day);
 
     setRangeEnd(day);
 
@@ -153,11 +197,10 @@ const CalendarPicker = ({
       <div className='grid grid-cols-7 gap-1 text-xs font-jetbrains-200'>
         {days.map(({ date, isCurrentMonth }, index) => {
           const isSelected =
-            isCurrentMonth &&
-            ((rangeStart &&
-              date.toDateString() === rangeStart.toDateString()) ||
-              (rangeEnd && date.toDateString() === rangeEnd.toDateString()) ||
-              (rangeStart && rangeEnd && date > rangeStart && date < rangeEnd));
+            // isCurrentMonth &&
+            (rangeStart && date.toDateString() === rangeStart.toDateString()) ||
+            (rangeEnd && date.toDateString() === rangeEnd.toDateString()) ||
+            (rangeStart && rangeEnd && date > rangeStart && date < rangeEnd);
 
           return (
             <button
@@ -167,11 +210,15 @@ const CalendarPicker = ({
               }}
               className={`w-full aspect-square flex items-center justify-center rounded p-1
 ${
-  isSelected
-    ? 'bg-green-500 text-white'
-    : isCurrentMonth
-      ? 'hover:bg-gray-200'
-      : 'text-gray-400 hover:bg-gray-100'
+  date.toDateString() === new Date().toDateString()
+    ? 'bg-green-700 text-white font-jetbrains-500'
+    : isSelected
+      ? isCurrentMonth
+        ? 'bg-green-500 text-white'
+        : 'bg-green-200 text-green-900'
+      : isCurrentMonth
+        ? 'hover:bg-gray-200'
+        : 'text-gray-400 hover:bg-gray-100'
 }`}
             >
               {date.getDate()}

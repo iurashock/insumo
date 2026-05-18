@@ -4,6 +4,7 @@ import userReducer from './slices/user.slice';
 import categoriesReducer from './slices/categories.slice';
 import settingsReducer from './slices/settings.slice';
 import dataReducer from './slices/data.slice';
+import walletsReducer from './slices/wallets.slice';
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     categories: categoriesReducer,
     data: dataReducer,
     settings: settingsReducer,
+    wallets: walletsReducer,
     // add other reducers here
   },
   middleware: (getDefaultMiddleware) =>

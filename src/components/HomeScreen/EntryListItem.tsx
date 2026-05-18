@@ -37,8 +37,10 @@ const EntryListItem = ({
             />
           </View>
         </View>
-        <View className='flex-[2.5] flex-col px-3 justify-center items-start'>
-          <Text className='text-xs font-jetbrains-500 w-full'>{walletId}</Text>
+        <View className='flex-[3] flex-col px-1 justify-center items-start'>
+          <Text className='text-xs font-jetbrains-500 w-full' numberOfLines={1}>
+            {walletId}
+          </Text>
           <Text
             className='text-sx font-jetbrains-500 w-full'
             style={{
@@ -51,6 +53,7 @@ const EntryListItem = ({
                       ? '#FE1684'
                       : 'black',
             }}
+            numberOfLines={1}
           >
             {category.name}
           </Text>
@@ -61,7 +64,7 @@ const EntryListItem = ({
             {comment}
           </Text>
         </View>
-        <View className='flex-[2] flex-col px-3 justify-center items-center'>
+        <View className='flex-[2] flex-col px-3 justify-center items-end'>
           {/* <Text className='text-xs font-jetbrains-500'>Amount</Text> */}
           <Text
             className='text-sm font-jetbrains-500'

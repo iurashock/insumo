@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { INTERVAL_PICK_OPTIONS, IntervalRange } from '@/src/constants/types';
 import CalendarPicker from './CalendarPicker.web';
 import { OPTIONS } from '@/src/constants/constants';
+import { useAppSelector } from '@/src/hooks/hooks';
 
 export default function TimeIntervalDropdown({
   anchorEl,
@@ -10,20 +11,27 @@ export default function TimeIntervalDropdown({
   anchorWidth,
   onSelect,
   onClose,
+  earliestRecordDate,
+  latestRecordDate,
 }: {
   anchorEl: HTMLElement;
   anchorGroupEl: React.RefObject<HTMLDivElement | null>;
   anchorWidth: number;
   onSelect: (range: IntervalRange) => void;
   onClose: () => void;
+  earliestRecordDate: Date;
+  latestRecordDate: Date;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const [rangeStart, setRangeStart] = useState<Date | null>(null);
   const [rangeEnd, setRangeEnd] = useState<Date | null>(null);
+  const userChoice = useAppSelector(
+    (state) => state.data.selectedIntervalRange.choice,
+  );
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
+    const handleMouseDown = (e: MouseEvent) => {
       const target = e.target as Node;
 
       if (ref.current?.contains(target)) return;
@@ -33,8 +41,19 @@ export default function TimeIntervalDropdown({
       onClose();
     };
 
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [onClose, anchorEl, anchorGroupEl]);
 
   const rect = anchorGroupEl.current
@@ -42,8 +61,6 @@ export default function TimeIntervalDropdown({
     : anchorEl.getBoundingClientRect();
 
   const handleSelection = (start: Date, end: Date) => {
-    console.log('entered: ', start, end);
-
     setRangeStart(start);
     setRangeEnd(end);
   };
@@ -67,9 +84,12 @@ export default function TimeIntervalDropdown({
       }
 
       case 'last_two_weeks': {
-        end = new Date(today);
+        const day = today.getDay() || 7; // Monday = 1
         start = new Date(today);
-        start.setDate(today.getDate() - 13); // 14 days total
+        start.setDate(today.getDate() - day - 6); // 14 days total
+
+        end = new Date(start);
+        end.setDate(start.getDate() + 13);
         break;
       }
 
@@ -92,21 +112,19 @@ export default function TimeIntervalDropdown({
       }
 
       case 'all_time': {
-        start = null;
-        end = null;
+        start = earliestRecordDate;
+        end = latestRecordDate;
         break;
       }
 
       case 'custom': {
         // ✅ only finalize if both selected
         if (rangeStart && rangeEnd) {
-          onSelect({
-            choice: 'custom',
-            start: rangeStart,
-            end: rangeEnd,
-          });
+          start = rangeStart;
+          end = rangeEnd;
+        } else {
+          return;
         }
-        return;
       }
     }
 
@@ -127,18 +145,31 @@ export default function TimeIntervalDropdown({
         left: rect.left,
       }}
     >
-      <CalendarPicker onConfirmSelection={handleSelection} />
+      <CalendarPicker
+        onConfirmSelection={handleSelection}
+        earliestRecordDate={earliestRecordDate}
+        latestRecordDate={latestRecordDate}
+      />
 
       <div className='w-[45%] flex flex-col pt-5'>
         {OPTIONS.map((opt) => (
           <button
             key={opt.value}
-            onClick={() => handlePresetAction(opt.value)}
+            onClick={() =>
+              handlePresetAction(
+                opt.value === 'clear' ? 'current_month' : opt.value,
+              )
+            }
             className={`text-left px-3 py-1 rounded-md text-xs font-jetbrains-500 ${
-              'custom' === opt.value
+              opt.value === userChoice
                 ? 'bg-gray-100 font-jetbrains-800'
-                : 'hover:bg-gray-50'
+                : opt.value === 'clear'
+                  ? userChoice !== 'current_month'
+                    ? 'bg-red-500 hover:bg-red-600 hover:font-jetbrains-800'
+                    : 'bg-red-400'
+                  : 'hover:bg-gray-100 '
             }`}
+            disabled={userChoice === 'current_month' && opt.value === 'clear'}
           >
             {opt.label}
           </button>

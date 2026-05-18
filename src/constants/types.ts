@@ -11,7 +11,28 @@ export type INTERVAL_PICK_OPTIONS =
   | 'last_three_months'
   | 'current_year'
   | 'all_time'
-  | 'custom';
+  | 'custom'
+  | 'clear';
+
+export type TRANSACTION_TYPE_PICK_OPTIONS =
+  | 'income'
+  | 'expense'
+  | 'saving'
+  | 'transfer'
+  | 'all';
+
+export type TRANSACTION_SORTING_PICK_OPTIONS =
+  | 'newest'
+  | 'oldest'
+  | 'least_expensive'
+  | 'most_expensive';
+
+export type FILTERS = {
+  transactionWallet: string | null;
+  transactionType: TRANSACTION_TYPE_PICK_OPTIONS;
+  transactionCategory: string | null;
+  transactionSortingChoice: TRANSACTION_SORTING_PICK_OPTIONS;
+};
 
 export type IntervalRange = {
   choice: INTERVAL_PICK_OPTIONS;
@@ -21,12 +42,22 @@ export type IntervalRange = {
 
 export type Category = {
   id: string;
+  userId: string;
   type: 'income' | 'expense' | 'saving' | 'transfer' | 'missing';
   name: string;
   color: string;
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
 
   isDeleted?: boolean;
+};
+
+export type Wallet = {
+  walletId: string;
+  userId: string;
+  name: string;
+  currency: string;
+  createdAt?: Date;
+  lastUpdated?: Date;
 };
 
 export type Entry = {
@@ -51,7 +82,7 @@ export type EntryListButtonProps = {
 };
 
 export type User = {
-  userId: number;
+  userId: string;
   name: string;
   email: string;
   phone: string;

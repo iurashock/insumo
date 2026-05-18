@@ -24,6 +24,8 @@ import {
   setSelectedIntervalRange,
 } from './data.slice';
 import { IntervalRange } from '@/src/constants/types';
+import { clearWallets, fetchWallets } from './wallets.slice';
+import { clearCategories, fetchCategories } from './categories.slice';
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -87,6 +89,9 @@ export const login = createAsyncThunk<
     };
     thunkAPI.dispatch(setSelectedIntervalRange(defaultInterval));
 
+    thunkAPI.dispatch(fetchWallets());
+    thunkAPI.dispatch(fetchCategories());
+
     return;
   } catch (error) {
     return thunkAPI.rejectWithValue('Login failed');
@@ -104,7 +109,7 @@ export const restoreSession = createAsyncThunk<void>(
       return thunkAPI.rejectWithValue('No active session');
     }
 
-    const userId = Number(userIdRaw);
+    const userId = userIdRaw;
     const user = USERS.find((u) => u.userId === userId);
 
     if (!user) {
@@ -153,6 +158,8 @@ export const restoreSession = createAsyncThunk<void>(
 
     thunkAPI.dispatch(setSelectedIntervalRange(defaultInterval));
 
+    thunkAPI.dispatch(fetchWallets());
+
     return;
   },
 );
@@ -170,6 +177,8 @@ export const logout = createAsyncThunk<void, void, { state: RootState }>(
     await removeItemFromStorage(SELECTED_ENTRY_ID_KEY);
 
     thunkAPI.dispatch(resetData());
+    thunkAPI.dispatch(clearWallets());
+    thunkAPI.dispatch(clearCategories());
   },
 );
 
@@ -232,7 +241,7 @@ async function fakeLogin({
 }: {
   email: string;
   password: string;
-}): Promise<{ accessToken: string; userId: number }> {
+}): Promise<{ accessToken: string; userId: string }> {
   const user = USERS.find((u) => u.email === email);
   if (!user) {
     throw new Error('Invalid credentials');
