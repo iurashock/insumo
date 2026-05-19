@@ -45,7 +45,8 @@ const DropdownMenuShell = ({
 
   return createPortal(
     <div
-      className='absolute z-50 rounded-lg bg-white shadow-md'
+      ref={ref}
+      className='absolute z-50 rounded-lg bg-white shadow-md py-1 px-1'
       style={{
         top: rect.bottom + 8,
         left: rect.left,

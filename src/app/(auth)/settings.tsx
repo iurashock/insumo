@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store';
-import { logout } from '../../store/slices/auth.slice';
+import { logout } from '../../store/auth/auth.slice';
 
 const settings = () => {
   const dispatch = useDispatch<AppDispatch>();

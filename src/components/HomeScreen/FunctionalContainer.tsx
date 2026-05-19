@@ -4,37 +4,59 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import TimeIntervalSkipButton from './Filters/TimeIntervalSkipButton';
 import TimeIntervalPicker from './Filters/TimeIntervalPicker';
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks';
-import { setSelectedIntervalRange } from '@/src/store/slices/data.slice';
-import TransactionFilterDropdown from './Filters/TransactionSingleSelectList.web';
+import {
+  clearFilters,
+  setFilters,
+  setSelectedIntervalRange,
+} from '@/src/store/data/data.slice';
 import TransactionSingleSelectList from './Filters/TransactionSingleSelectList.web';
 import {
   TRANSACTION_SORTING_OPTIONS,
   TRANSACTION_TYPE_OPTIONS,
 } from '@/src/constants/constants';
 import TransactionSearchBar from './Filters/TransactionSearchBar.web';
-import ResetFiltersButton from './Filters/ResetFiltersButton.web';
 import TransactionMultipleSelectList from './Filters/TransactionMultipleSelectList.web';
+import {
+  TRANSACTION_MULTIPLE_PICK_OPTIONS,
+  TRANSACTION_SORTING_PICK_OPTIONS,
+} from '@/src/constants/types';
+import FunctionalButton from './Filters/FunctionalButton.web';
 
 const FunctionalContainer = ({
   onRefresAction,
-  filterActive,
   earliestRecordDate,
   latestRecordDate,
 }: {
   onRefresAction: () => void;
-  filterActive?: string;
   earliestRecordDate: Date;
   latestRecordDate: Date;
 }) => {
+  const dispatch = useAppDispatch();
   const transactionFiltersRef = useRef<HTMLDivElement>(null);
   const intervalGroupRef = useRef<HTMLDivElement>(null);
-  const dispatch = useAppDispatch();
-  // const [categoriesIconName, setCategoriesIconName] = useState('');
+
+  const selectedTypes = useAppSelector<TRANSACTION_MULTIPLE_PICK_OPTIONS>(
+    (state) => state.data.filters.transactionType,
+  );
+  const selectedWallets = useAppSelector<TRANSACTION_MULTIPLE_PICK_OPTIONS>(
+    (state) => state.data.filters.transactionWallet,
+  );
+  const selectedCategories = useAppSelector<TRANSACTION_MULTIPLE_PICK_OPTIONS>(
+    (state) => state.data.filters.transactionCategories,
+  );
+  const selectedSortingOption =
+    useAppSelector<TRANSACTION_SORTING_PICK_OPTIONS>(
+      (state) => state.data.filters.transactionSortingChoice,
+    );
+  const searchInput = useAppSelector<string>(
+    (state) => state.data.filters.transactionSearch,
+  );
+
+  const userWallets = useAppSelector((state) => state.wallets.items);
+  const userCategories = useAppSelector((state) => state.categories.items);
   const selectedIntervalRange = useAppSelector(
     (state) => state.data.selectedIntervalRange,
   );
-  const userWallets = useAppSelector((state) => state.wallets.items);
-  const userCategories = useAppSelector((state) => state.categories.items);
 
   const handleTimeIntervalSkipForwardAction = (direction: boolean) => {
     const { choice, start, end } = selectedIntervalRange;
@@ -129,85 +151,186 @@ const FunctionalContainer = ({
     );
   };
 
-  const handleTransactionWalletFilter = (id: string) => {
-    console.log(id);
+  const handleTransactionTypeFilter = (
+    selectedTypes: TRANSACTION_MULTIPLE_PICK_OPTIONS,
+  ) => {
+    dispatch(
+      setFilters({
+        transactionType: {
+          all_options: selectedTypes.all_options,
+          pickedOptions: selectedTypes.pickedOptions,
+        },
+      }),
+    );
+  };
+
+  const handleTransactionWalletFilter = (
+    selectedWallets: TRANSACTION_MULTIPLE_PICK_OPTIONS,
+  ) => {
+    dispatch(
+      setFilters({
+        transactionWallet: {
+          all_options: selectedWallets.all_options,
+          pickedOptions: selectedWallets.pickedOptions,
+        },
+      }),
+    );
+  };
+
+  const handleTransactionCategoriesFilter = (
+    selectedCategories: TRANSACTION_MULTIPLE_PICK_OPTIONS,
+  ) => {
+    dispatch(
+      setFilters({
+        transactionCategories: {
+          all_options: selectedCategories.all_options,
+          pickedOptions: selectedCategories.pickedOptions,
+        },
+      }),
+    );
+  };
+
+  const handleSortingFilter = (id: TRANSACTION_SORTING_PICK_OPTIONS) => {
+    dispatch(setFilters({ transactionSortingChoice: id }));
+  };
+
+  const handleSearchFilter = (value: string) => {
+    console.log('hehe');
+
+    dispatch(setFilters({ transactionSearch: value }));
+  };
+
+  const handleResetFilters = () => {
+    dispatch(clearFilters());
+  };
+
+  const getLabel = (field: string) => {
+    if (field === 'type') {
+      return !selectedTypes.pickedOptions ||
+        selectedTypes.pickedOptions.length === TRANSACTION_TYPE_OPTIONS.length
+        ? 'All types'
+        : selectedTypes.pickedOptions.length === 0
+          ? 'Pick a type'
+          : (
+              selectedTypes.pickedOptions
+                .map(
+                  (id) =>
+                    TRANSACTION_TYPE_OPTIONS.find((c) => c.id === id)?.label,
+                )
+                .filter(Boolean) as string[]
+            ).join(',');
+    }
+
+    if (field === 'wallet') {
+      return !selectedWallets.pickedOptions ||
+        selectedWallets.pickedOptions.length === userWallets.length
+        ? 'All wallets'
+        : selectedWallets.pickedOptions.length === 0
+          ? 'Pick a wallet'
+          : (
+              selectedWallets.pickedOptions
+                .map((id) => userWallets.find((c) => c.walletId === id)?.name)
+                .filter(Boolean) as string[]
+            ).join(',');
+    }
+
+    return !selectedCategories.pickedOptions ||
+      selectedCategories.pickedOptions.length === userCategories.length
+      ? 'All categories'
+      : selectedCategories.pickedOptions.length === 0
+        ? 'Pick a category'
+        : (
+            selectedCategories.pickedOptions
+              .map((id) => userCategories.find((c) => c.id === id)?.name)
+              .filter(Boolean) as string[]
+          ).join(',');
   };
 
   return (
     <View className='w-full h-full pt-4 flex flex-column justify-between items-center'>
       <View className='w-full h-[70%] px-4 flex flex-row justify-between items-start'>
-        <View className='w-[80%] h-full flex flex-row justify-start items-center'>
+        <View className='w-[90%] h-[85%] flex flex-row justify-start items-center border-r border-r-gray-200'>
           <Text>top content here: add entry</Text>
         </View>
-        <Pressable
-          onPress={onRefresAction}
-          className='flex flex-row justify-center items-center'
-        >
-          <Text>Refresh data</Text>
-          <MaterialCommunityIcons name='refresh' size={24} color={'black'} />
-        </Pressable>
+        <View className='flex flex-1 flex-col justify-center items-center pl-4'>
+          <FunctionalButton onPress={onRefresAction} />
+          <FunctionalButton onPress={handleResetFilters} danger />
+        </View>
       </View>
       <View className='w-full h-[30%] flex flex-row justify-between items-center pb-4 px-4'>
         <div
           // className='w-[29%] h-full border-r border-r-gray-300 flex flex-row justify-between items-center'
-          className='flex-1 h-full border-r border-r-gray-300 flex flex-row justify-between items-center'
+          className='flex-1 h-full flex flex-row justify-between items-center'
           ref={transactionFiltersRef}
         >
-          <TransactionSingleSelectList
-            onClose={() => {}}
-            options={TRANSACTION_TYPE_OPTIONS}
-            label='Type'
-            onSelect={handleTransactionWalletFilter}
-          />
-          <TransactionFilterDropdown
-            onClose={() => {}}
-            width={Dimensions.get('window').width * 0.15}
+          {/* <TransactionSingleSelectList<TRANSACTION_TYPE_PICK_OPTIONS> */}
+          <TransactionMultipleSelectList
+            width={Dimensions.get('window').width * 0.08}
+            value={selectedTypes}
             options={[
               {
-                value: 'all_wallets',
+                id: 'all_options',
+                label: 'All types',
+              },
+              ...TRANSACTION_TYPE_OPTIONS,
+            ]}
+            label={getLabel('type')}
+            onSelect={handleTransactionTypeFilter}
+          />
+          <TransactionMultipleSelectList
+            value={selectedWallets}
+            width={Dimensions.get('window').width * 0.12}
+            options={[
+              {
+                id: 'all_options',
                 label: 'All wallets',
               },
               ...userWallets.map((wallet) => ({
-                value: wallet.walletId,
+                id: wallet.walletId,
                 label: wallet.name,
               })),
             ]}
-            label='Wallet'
+            label={getLabel('wallet')}
             onSelect={handleTransactionWalletFilter}
           />
           <TransactionMultipleSelectList
-            onClose={() => {}}
+            value={selectedCategories}
             width={Dimensions.get('window').width * 0.15}
             options={[
               {
-                value: 'all_categories',
+                id: 'all_options',
                 label: 'All categories',
               },
               ...userCategories.map((category) => ({
-                value: category.id,
+                id: category.id,
                 label: category.name,
               })),
             ]}
-            label='Choose categories'
-            onSelect={handleTransactionWalletFilter}
+            label={getLabel('category')}
+            onSelect={handleTransactionCategoriesFilter}
             showIcons
             iconName={
-              `numeric-${userCategories.length < 9 ? userCategories.length + 1 : '9-plus'}-circle-outline` as keyof typeof MaterialCommunityIcons.glyphMap
+              `numeric-${selectedCategories.pickedOptions ? (selectedCategories.pickedOptions.length === 0 ? '0' : selectedCategories.pickedOptions.length < 9 ? selectedCategories.pickedOptions.length : '9-plus') : userCategories.length < 9 ? userCategories.length : '9-plus'}-circle-outline` as keyof typeof MaterialCommunityIcons.glyphMap
             }
           />
-          <TransactionSingleSelectList
+          <TransactionSingleSelectList<TRANSACTION_SORTING_PICK_OPTIONS>
+            value={selectedSortingOption}
             onClose={() => {}}
             width={100}
             options={TRANSACTION_SORTING_OPTIONS}
-            label='Sort'
-            onSelect={handleTransactionWalletFilter}
+            label={
+              TRANSACTION_SORTING_OPTIONS.find(
+                (o) => o.id === selectedSortingOption,
+              )?.label ?? 'Sort'
+            }
+            onSelect={handleSortingFilter}
+            showIcons
           />
-          {/* </div>
-        <View className='w-[43%] h-full border-r border-r-gray-300 '> */}
-          {/* <Text>search bar</Text> */}
-          {/* </View> */}
-          <TransactionSearchBar />
-          <ResetFiltersButton />
+          <TransactionSearchBar
+            value={searchInput}
+            onChange={handleSearchFilter}
+          />
+          {/* <ResetFiltersButton onReset={handleResetFilters} /> */}
         </div>
 
         <div

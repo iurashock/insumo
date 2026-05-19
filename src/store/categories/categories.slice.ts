@@ -1,7 +1,7 @@
 import { CATEGORIES } from '@/src/constants/constants';
 import { Category } from '@/src/constants/types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '..';
+import { ThunkConfig } from '..';
 
 type CategoriesStatus = 'idle' | 'loading' | 'error';
 
@@ -15,15 +15,14 @@ const initialState: CategoriesState = {
   status: 'idle',
 };
 
-export const fetchCategories = createAsyncThunk<
-  Category[],
-  void,
-  { state: RootState }
->('categories/fetch', async (_, { getState }) => {
-  const userID = getState().user.userId;
-  // replace with DB/API call later
-  return CATEGORIES.filter((category) => category.userId === userID);
-});
+export const fetchCategories = createAsyncThunk<Category[], void, ThunkConfig>(
+  'categories/fetch',
+  async (_, { getState }) => {
+    const userID = getState().user.userId;
+    // replace with DB/API call later
+    return CATEGORIES.filter((category) => category.userId === userID);
+  },
+);
 
 const categoriesSlice = createSlice({
   name: 'categories',

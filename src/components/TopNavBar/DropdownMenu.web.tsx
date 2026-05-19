@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import DropdownMenuItem from './DropdownMenuItem.web';
 import DropdownToggleSwitch from './DropdownToggleSwitch.web';
-import { toggleDarkMode } from '@/src/store/slices/settings.slice';
-import { logout } from '@/src/store/slices/auth.slice';
+import { toggleDarkMode } from '@/src/store/settings/settings.slice';
+import { logout } from '@/src/store/auth/auth.slice';
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks';
 
 export default function DropDownMenu({

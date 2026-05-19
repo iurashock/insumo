@@ -10,7 +10,7 @@ import '../../global.css';
 
 import TopNavBar from '../components/TopNavBar/TopNavBar';
 import { AppDispatch, store } from '../store';
-import { restoreSession } from '../store/slices/auth.slice';
+import { restoreSession } from '../store/auth/auth.slice';
 
 SplashScreen.preventAutoHideAsync();
 

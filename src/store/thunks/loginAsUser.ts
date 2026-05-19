@@ -4,11 +4,11 @@ import {
   USER_ID_KEY,
   USERS,
 } from '@/src/constants/constants';
-import { setUser } from '@/src/store/slices/user.slice';
-import { hydrateFromUser } from '@/src/store/slices/settings.slice';
-import { setItemFromStorage } from '@/src/utils/storage';
+import { setUser } from '@/src/store/user/user.slice';
+import { hydrateFromUser } from '@/src/store/settings/settings.slice';
+import { setItemInStorage } from '@/src/utils/storage';
 
-export const loginAsUser = createAsyncThunk<void, { userId: number }>(
+export const loginAsUser = createAsyncThunk<void, { userId: string }>(
   'auth/loginAsUser',
   async ({ userId }, thunkAPI) => {
     const user = USERS.find((u) => u.userId === userId);
@@ -18,8 +18,8 @@ export const loginAsUser = createAsyncThunk<void, { userId: number }>(
     }
 
     // ✅ Store token securely (side effect)
-    await setItemFromStorage(ACCESS_TOKEN_KEY, 'fake-token');
-    await setItemFromStorage(USER_ID_KEY, userId.toString());
+    await setItemInStorage(ACCESS_TOKEN_KEY, 'fake-token');
+    await setItemInStorage(USER_ID_KEY, userId.toString());
 
     // ✅ User identity slice
     thunkAPI.dispatch(

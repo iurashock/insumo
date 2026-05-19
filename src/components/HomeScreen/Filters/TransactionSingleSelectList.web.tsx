@@ -1,11 +1,14 @@
 import { View, Text, Pressable } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { OPTIONS } from '@/src/constants/constants';
+import { OPTIONS, TRANSACTION_TYPE_OPTIONS } from '@/src/constants/constants';
 import DropdownMenuShell from './DropdownMenuShell.web';
-import TransactionDropdownMenuItem from './TransactionDropdownMenuItem.web';
+import DropdownMenuSingleSelectItem from './DropdownMenuSingleSelectItem.web';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { TRANSACTION_TYPE_PICK_OPTIONS } from '@/src/constants/types';
 
-const TransactionSingleSelectList = ({
+const TransactionSingleSelectList = <T extends string>({
+  value,
   width,
   onClose,
   options,
@@ -14,10 +17,11 @@ const TransactionSingleSelectList = ({
   onSelect,
   iconName,
 }: {
+  value: T;
   width?: number;
   onClose: () => void;
-  onSelect: (id: string) => void;
-  options: { value: string; label: string }[];
+  onSelect: (id: T) => void;
+  options: { id: T; label: string }[];
   label: string;
   showIcons?: boolean;
   iconName?: keyof typeof MaterialCommunityIcons.glyphMap;
@@ -26,7 +30,7 @@ const TransactionSingleSelectList = ({
   const [open, setOpen] = useState(false);
 
   const toggleOpen = () => {
-    console.log(iconName);
+    // console.log(iconName);
 
     if (!open) {
       setOpen((prev) => !prev);
@@ -52,7 +56,7 @@ const TransactionSingleSelectList = ({
             return (
               <View className='w-full flex flex-row justify-between items-center'>
                 <View className='flex-1 flex flex-row justify-start items-center'>
-                  {showIcons && (
+                  {showIcons && iconName && (
                     <MaterialCommunityIcons
                       name={iconName}
                       size={pressed ? 18 : 20}
@@ -63,16 +67,24 @@ const TransactionSingleSelectList = ({
                     className='text-sm font-jetbrains-600'
                     style={{
                       color: hovered ? 'rgba(0,0,0,0.95)' : 'rgba(0,0,0,0.65)',
-                      fontSize: pressed ? 13 : 14,
+                      fontSize: pressed ? 14 : 14,
                     }}
+                    numberOfLines={1}
                   >
                     {label}
                   </Text>
                 </View>
-                <MaterialCommunityIcons
-                  name='arrow-down'
-                  size={pressed ? 18 : 20}
+                <MaterialIcons
+                  name='arrow-drop-down'
+                  size={24}
                   color={hovered ? 'rgba(0,0,0,0.45)' : 'rgba(0,0,0,0.25)'}
+                  style={
+                    {
+                      transform: [{ rotate: open ? '180deg' : '0deg' }],
+                      transition:
+                        'transform 400ms cubic-bezier(0.4, 0, 0.2, 1)',
+                    } as any
+                  }
                 />
               </View>
             );
@@ -88,11 +100,16 @@ const TransactionSingleSelectList = ({
           {options &&
             options.map((opt) => {
               return (
-                <TransactionDropdownMenuItem
-                  itemKey={opt.value}
-                  itemValue={opt.label}
-                  onSelect={onSelect}
-                  iconName='circle'
+                <DropdownMenuSingleSelectItem
+                  key={opt.id}
+                  value={value}
+                  id={opt.id}
+                  label={opt.label}
+                  onSelect={(id) => {
+                    onSelect(id);
+                    setOpen(false);
+                  }}
+                  showIcons={showIcons ?? false}
                 />
               );
             })}

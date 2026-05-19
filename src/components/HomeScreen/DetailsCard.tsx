@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks';
 import { Entry, Category } from '@/src/constants/types';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { FALLBACK_CATEGORY } from '@/src/constants/constants';
-import { setSelectedEntryId } from '@/src/store/slices/data.slice';
+import { setSelectedEntryId } from '@/src/store/data/data.slice';
 import EntryListButton from './EntryListButton';
 
 const DetailsCard = () => {

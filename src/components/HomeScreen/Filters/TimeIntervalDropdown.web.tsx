@@ -160,16 +160,16 @@ export default function TimeIntervalDropdown({
                 opt.value === 'clear' ? 'current_month' : opt.value,
               )
             }
+            // disabled={userChoice === 'current_month' && opt.value === 'clear'}
             className={`text-left px-3 py-1 rounded-md text-xs font-jetbrains-500 ${
               opt.value === userChoice
                 ? 'bg-gray-100 font-jetbrains-800'
                 : opt.value === 'clear'
                   ? userChoice !== 'current_month'
-                    ? 'bg-red-500 hover:bg-red-600 hover:font-jetbrains-800'
-                    : 'bg-red-400'
+                    ? 'text-red-500 hover:text-red-600 hover:bg-gray-100'
+                    : 'text-red-500 cursor-not-allowed pointer-events-none'
                   : 'hover:bg-gray-100 '
             }`}
-            disabled={userChoice === 'current_month' && opt.value === 'clear'}
           >
             {opt.label}
           </button>

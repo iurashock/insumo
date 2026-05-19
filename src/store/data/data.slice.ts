@@ -1,5 +1,10 @@
 import { ALL_ENTRIES_LIST_KEY, ENTRIES } from '@/src/constants/constants';
-import { Entry, FILTERS, IntervalRange } from '@/src/constants/types';
+import {
+  Entry,
+  FILTERS,
+  IntervalRange,
+  TRANSACTION_MULTIPLE_PICK_OPTIONS,
+} from '@/src/constants/types';
 import { setItemInStorage } from '@/src/utils/storage';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
@@ -10,11 +15,17 @@ export type DataState = {
   allEntriesList: Entry[];
 };
 
+const defaultFilterItem: TRANSACTION_MULTIPLE_PICK_OPTIONS = {
+  all_options: true,
+  pickedOptions: null,
+};
+
 const initialFilters: FILTERS = {
-  transactionWallet: null,
-  transactionType: 'all',
-  transactionCategory: null,
+  transactionWallet: defaultFilterItem,
+  transactionType: defaultFilterItem,
+  transactionCategories: defaultFilterItem,
   transactionSortingChoice: 'newest',
+  transactionSearch: '',
 };
 
 const initialState: DataState = {

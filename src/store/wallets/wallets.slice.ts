@@ -1,7 +1,7 @@
 import { WALLETS } from '@/src/constants/constants';
 import { Wallet } from '@/src/constants/types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '..';
+import { ThunkConfig } from '..';
 
 type WalletsState = {
   items: Wallet[];
@@ -11,15 +11,14 @@ const initialState: WalletsState = {
   items: WALLETS,
 };
 
-export const fetchWallets = createAsyncThunk<
-  Wallet[],
-  void,
-  { state: RootState }
->('wallets/fetch', async (_, { getState }) => {
-  const userID = getState().user.userId;
-  // replace with DB/API call later
-  return WALLETS.filter((wallet) => wallet.userId === userID);
-});
+export const fetchWallets = createAsyncThunk<Wallet[], void, ThunkConfig>(
+  'wallets/fetch',
+  async (_, { getState }) => {
+    const userID = getState().user.userId;
+    // replace with DB/API call later
+    return WALLETS.filter((wallet) => wallet.userId === userID);
+  },
+);
 
 const walletsSlice = createSlice({
   name: 'wallets',

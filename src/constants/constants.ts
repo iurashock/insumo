@@ -49,24 +49,24 @@ export const OPTIONS: {
 ];
 
 export const TRANSACTION_TYPE_OPTIONS: {
-  value: TRANSACTION_TYPE_PICK_OPTIONS;
+  id: TRANSACTION_TYPE_PICK_OPTIONS;
   label: string;
 }[] = [
-  { value: 'all', label: 'All types' },
-  { value: 'income', label: 'Incomes' },
-  { value: 'expense', label: 'Expenses' },
-  { value: 'saving', label: 'Savings' },
-  { value: 'transfer', label: 'Transfers' },
+  // { id: 'all', label: 'All types' },
+  { id: 'income', label: 'Incomes' },
+  { id: 'expense', label: 'Expenses' },
+  { id: 'saving', label: 'Savings' },
+  { id: 'transfer', label: 'Transfers' },
 ];
 
 export const TRANSACTION_SORTING_OPTIONS: {
-  value: TRANSACTION_SORTING_PICK_OPTIONS;
+  id: TRANSACTION_SORTING_PICK_OPTIONS;
   label: string;
 }[] = [
-  { value: 'newest', label: 'Newest' },
-  { value: 'oldest', label: 'Oldest' },
-  { value: 'least_expensive', label: 'Price ↑' },
-  { value: 'most_expensive', label: 'Price ↓' },
+  { id: 'newest', label: 'Newest' },
+  { id: 'oldest', label: 'Oldest' },
+  { id: 'least_expensive', label: 'Price ↑' },
+  { id: 'most_expensive', label: 'Price ↓' },
 ];
 
 export const USERS: User[] = [

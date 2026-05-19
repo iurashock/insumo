@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native';
 import React, { useState } from 'react';
-import { login } from '../../store/slices/auth.slice';
+import { login } from '../../store/auth/auth.slice';
 import LoginButton from './LandingButton.web';
 import LoginInputField from './LandingInputField.web';
 import { useDispatch } from 'react-redux';

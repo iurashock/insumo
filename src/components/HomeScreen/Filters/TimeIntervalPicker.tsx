@@ -4,7 +4,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { IntervalRange } from '@/src/constants/types';
 import TimeIntervalDropdown from './TimeIntervalDropdown.web';
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks';
-import { setSelectedIntervalRange } from '@/src/store/slices/data.slice';
+import { setSelectedIntervalRange } from '@/src/store/data/data.slice';
 import { MONTH_NAMES } from '@/src/constants/constants';
 
 const TimeIntervalPicker = ({

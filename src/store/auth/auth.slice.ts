@@ -5,8 +5,8 @@ import {
 } from '@/src/utils/storage';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loginAsUser } from '../thunks/loginAsUser';
-import { hydrateFromUser } from './settings.slice';
-import { setUser, UserState } from './user.slice';
+import { hydrateFromUser } from '../settings/settings.slice';
+import { setUser, UserState } from '../user/user.slice';
 import {
   ACCESS_TOKEN_KEY,
   ALL_ENTRIES_LIST_KEY,
@@ -16,16 +16,19 @@ import {
   USER_ID_KEY,
   USERS,
 } from '@/src/constants/constants';
-import { RootState } from '..';
+import { RootState, ThunkConfig } from '..';
 import {
   resetData,
   setAllEntriesList,
   setSelectedEntryId,
   setSelectedIntervalRange,
-} from './data.slice';
+} from '../data/data.slice';
 import { IntervalRange } from '@/src/constants/types';
-import { clearWallets, fetchWallets } from './wallets.slice';
-import { clearCategories, fetchCategories } from './categories.slice';
+import { clearWallets, fetchWallets } from '../wallets/wallets.slice';
+import {
+  clearCategories,
+  fetchCategories,
+} from '../categories/categories.slice';
 
 type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated';
 
@@ -42,7 +45,8 @@ const initialState: AuthState = {
 // ✅ Async login example
 export const login = createAsyncThunk<
   void,
-  { email: string; password: string }
+  { email: string; password: string },
+  ThunkConfig
 >('auth/login', async (credentials, thunkAPI) => {
   try {
     // TODO: replace with real API call
@@ -98,7 +102,7 @@ export const login = createAsyncThunk<
   }
 });
 
-export const restoreSession = createAsyncThunk<void>(
+export const restoreSession = createAsyncThunk<void, void, ThunkConfig>(
   'auth/restoreSession',
   async (_, thunkAPI) => {
     const token = await getItemFromStorage(ACCESS_TOKEN_KEY);
@@ -159,6 +163,7 @@ export const restoreSession = createAsyncThunk<void>(
     thunkAPI.dispatch(setSelectedIntervalRange(defaultInterval));
 
     thunkAPI.dispatch(fetchWallets());
+    thunkAPI.dispatch(fetchCategories());
 
     return;
   },

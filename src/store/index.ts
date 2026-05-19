@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './slices/auth.slice';
-import userReducer from './slices/user.slice';
-import categoriesReducer from './slices/categories.slice';
-import settingsReducer from './slices/settings.slice';
-import dataReducer from './slices/data.slice';
-import walletsReducer from './slices/wallets.slice';
+import authReducer from './auth/auth.slice';
+import userReducer from './user/user.slice';
+import categoriesReducer from './categories/categories.slice';
+import settingsReducer from './settings/settings.slice';
+import dataReducer from './data/data.slice';
+import walletsReducer from './wallets/wallets.slice';
 
 export const store = configureStore({
   reducer: {
@@ -24,3 +24,7 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export type ThunkConfig = {
+  state: RootState;
+  dispatch: AppDispatch;
+};

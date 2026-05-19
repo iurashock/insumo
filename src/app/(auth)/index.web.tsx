@@ -8,9 +8,11 @@ import { Entry } from '@/src/constants/types';
 import { TOP_NAVBAR_HEIGHT } from '../../constants/constants';
 import FooterBar from '../../components/FooterBar';
 import { useAppDispatch, useAppSelector } from '@/src/hooks/hooks';
-import { refreshData, setSelectedEntryId } from '@/src/store/slices/data.slice';
+import { refreshData, setSelectedEntryId } from '@/src/store/data/data.slice';
+
 import DetailsCard from '@/src/components/HomeScreen/DetailsCard';
 import FunctionalContainer from '@/src/components/HomeScreen/FunctionalContainer';
+import { selectFilteredEntries } from '@/src/store/data/data.selectors';
 
 export default function IndexWebScreen() {
   const dispatch = useAppDispatch();
@@ -18,12 +20,7 @@ export default function IndexWebScreen() {
   const [sections, setSections] = useState<Section[]>([]);
   const [earliestRecordDate, setEarliestRecordDate] = useState(new Date());
   const [latestRecordDate, setLatestRecordDate] = useState(new Date());
-  const allEntriesList = useAppSelector((state) => state.data.allEntriesList);
-  const {
-    choice: selectedIntervalChoice,
-    start: selectedIntervalStart,
-    end: selectedIntervalEnd,
-  } = useAppSelector((state) => state.data.selectedIntervalRange);
+  const filteredEntriesList = useAppSelector(selectFilteredEntries);
 
   type Section = {
     title: string;
@@ -54,41 +51,14 @@ export default function IndexWebScreen() {
   };
 
   useEffect(() => {
-    if (
-      selectedIntervalChoice === 'all_time' ||
-      !selectedIntervalStart ||
-      !selectedIntervalEnd
-    ) {
-      const grouped = groupAndSortEntriesList(allEntriesList);
-      setSections(grouped);
-      return;
-    }
-
-    const filtered_entries_array = allEntriesList.filter((entry) => {
-      const entryDate = new Date(entry.entryDate);
-      const intervalEndFullDay = new Date(selectedIntervalEnd);
-      intervalEndFullDay.setHours(23, 59, 999);
-
-      return (
-        entryDate >= selectedIntervalStart && entryDate <= intervalEndFullDay
-      );
-    });
-
-    const grouped_entries_array = groupAndSortEntriesList(
-      filtered_entries_array,
-    );
-    setSections(grouped_entries_array);
-  }, [
-    selectedIntervalChoice,
-    selectedIntervalStart,
-    selectedIntervalEnd,
-    allEntriesList,
-  ]);
+    const grouped = groupAndSortEntriesList(filteredEntriesList);
+    setSections(grouped);
+  }, [filteredEntriesList]);
 
   useEffect(() => {
-    if (allEntriesList.length === 0) return;
+    if (filteredEntriesList.length === 0) return;
 
-    const { earliest, latest } = allEntriesList.reduce(
+    const { earliest, latest } = filteredEntriesList.reduce(
       (acc, entry) => {
         const date = new Date(entry.entryDate);
 
@@ -98,14 +68,14 @@ export default function IndexWebScreen() {
         return acc;
       },
       {
-        earliest: new Date(allEntriesList[0].entryDate),
-        latest: new Date(allEntriesList[0].entryDate),
+        earliest: new Date(filteredEntriesList[0].entryDate),
+        latest: new Date(filteredEntriesList[0].entryDate),
       },
     );
 
     setEarliestRecordDate(earliest);
     setLatestRecordDate(latest);
-  }, [allEntriesList]);
+  }, [filteredEntriesList]);
 
   const handleItemSelected = (id: string) => {
     console.log(id);
@@ -135,7 +105,7 @@ export default function IndexWebScreen() {
         </View>
 
         <View className='w-[45%] h-[100%] bg-white rounded-2xl shadow-md overflow-hidden'>
-          {allEntriesList.length > 0 ? (
+          {filteredEntriesList.length > 0 ? (
             <SectionList
               ref={listRef}
               sections={sections}

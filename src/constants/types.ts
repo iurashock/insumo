@@ -21,6 +21,11 @@ export type TRANSACTION_TYPE_PICK_OPTIONS =
   | 'transfer'
   | 'all';
 
+export type TRANSACTION_MULTIPLE_PICK_OPTIONS = {
+  all_options: boolean;
+  pickedOptions: string[] | null;
+};
+
 export type TRANSACTION_SORTING_PICK_OPTIONS =
   | 'newest'
   | 'oldest'
@@ -28,10 +33,11 @@ export type TRANSACTION_SORTING_PICK_OPTIONS =
   | 'most_expensive';
 
 export type FILTERS = {
-  transactionWallet: string | null;
-  transactionType: TRANSACTION_TYPE_PICK_OPTIONS;
-  transactionCategory: string | null;
+  transactionWallet: TRANSACTION_MULTIPLE_PICK_OPTIONS;
+  transactionType: TRANSACTION_MULTIPLE_PICK_OPTIONS;
+  transactionCategories: TRANSACTION_MULTIPLE_PICK_OPTIONS;
   transactionSortingChoice: TRANSACTION_SORTING_PICK_OPTIONS;
+  transactionSearch: string;
 };
 
 export type IntervalRange = {
