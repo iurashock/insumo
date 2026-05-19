@@ -12,7 +12,10 @@ import { refreshData, setSelectedEntryId } from '@/src/store/data/data.slice';
 
 import DetailsCard from '@/src/components/HomeScreen/DetailsCard';
 import FunctionalContainer from '@/src/components/HomeScreen/FunctionalContainer';
-import { selectFilteredEntries } from '@/src/store/data/data.selectors';
+import {
+  selectFilteredEntries,
+  selectGroupedEntries,
+} from '@/src/store/data/data.selectors';
 
 export default function IndexWebScreen() {
   const dispatch = useAppDispatch();
@@ -21,6 +24,7 @@ export default function IndexWebScreen() {
   const [earliestRecordDate, setEarliestRecordDate] = useState(new Date());
   const [latestRecordDate, setLatestRecordDate] = useState(new Date());
   const filteredEntriesList = useAppSelector(selectFilteredEntries);
+  const groupedEntriesList = useAppSelector(selectGroupedEntries);
 
   type Section = {
     title: string;
@@ -28,9 +32,7 @@ export default function IndexWebScreen() {
     data: Entry[];
   };
 
-  const groupAndSortEntriesList = (
-    filtered_entries_array: Entry[],
-  ): Section[] => {
+  const groupEntriesList = (filtered_entries_array: Entry[]): Section[] => {
     return Object.values(
       filtered_entries_array.reduce(
         (acc, entry) => {
@@ -47,13 +49,13 @@ export default function IndexWebScreen() {
         },
         {} as Record<string, Section>,
       ),
-    ).sort((a, b) => new Date(b.title).getTime() - new Date(a.title).getTime());
+    ); //.sort((a, b) => new Date(b.title).getTime() - new Date(a.title).getTime());
   };
 
-  useEffect(() => {
-    const grouped = groupAndSortEntriesList(filteredEntriesList);
-    setSections(grouped);
-  }, [filteredEntriesList]);
+  // useEffect(() => {
+  //   const grouped = groupEntriesList(filteredEntriesList);
+  //   setSections(grouped);
+  // }, [filteredEntriesList]);
 
   useEffect(() => {
     if (filteredEntriesList.length === 0) return;
@@ -105,10 +107,10 @@ export default function IndexWebScreen() {
         </View>
 
         <View className='w-[45%] h-[100%] bg-white rounded-2xl shadow-md overflow-hidden'>
-          {filteredEntriesList.length > 0 ? (
+          {groupedEntriesList.length > 0 ? (
             <SectionList
               ref={listRef}
-              sections={sections}
+              sections={groupedEntriesList}
               keyExtractor={(item) => item.id}
               className='flex-1'
               contentContainerClassName='gap-1'
